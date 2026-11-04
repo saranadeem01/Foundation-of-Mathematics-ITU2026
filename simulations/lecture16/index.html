@@ -120,6 +120,123 @@ b <input type="range" id="mb" min="-2.8" max="3" step="0.01" value="2"><b id="mb
 <b>③ Inequalities and error bounds.</b> |sin b − sin a| = |cos c||b−a| ≤ |b−a|. In general, if |f′|≤K then |f(b)−f(a)|≤K|b−a|.<br>
 <b>④ Antiderivatives.</b> f′=0 ⇒ f is constant, which gives the “+C”.<br>
 <b>⑤ Later topics:</b> it is the key step in proving the Fundamental Theorem of Calculus, Taylor’s theorem with remainder, and L’Hôpital’s rule.</div></section>
+
+<section><span class="tag">Optional</span><h2>2b · Proof techniques: reduction and contradiction</h2>
+<p class="mut">Two proof ideas appear again and again in this chapter. Both are worth naming for students.</p>
+<h3>A · Reduction: turn a new problem into one you already solved</h3>
+<div class="say">“I don’t know how to prove the MVT directly. But I do know Rolle. Can I <i>reduce</i> the MVT to Rolle?”</div>
+<div class="box"><b>Proof of the MVT by reduction to Rolle.</b> Let m = [f(b) − f(a)]/(b − a) and define the new function<br>
+<b>g(x) = f(x) − [ f(a) + m(x − a) ]</b> (the curve minus the secant line).<br>
+① g is continuous on [a,b] and differentiable on (a,b), because f is and the line is.<br>
+② g(a) = f(a) − f(a) = 0 and g(b) = f(b) − f(a) − m(b − a) = 0. So g(a) = g(b).<br>
+③ Rolle applies to g: there is c in (a,b) with g′(c) = 0.<br>
+④ g′(x) = f′(x) − m, so f′(c) − m = 0, i.e. <b>f′(c) = m</b>. ∎</div>
+<h3>Simulation: watch the reduction happen</h3>
+<div class="ctl">f: <select id="rdf"><option value="0">x³/3 − x</option><option value="1">sin x</option><option value="2">x²/2</option></select>
+a <input type="range" id="rda" min="-3" max="2.8" step="0.01" value="-2"><b id="rdav"></b>
+b <input type="range" id="rdb" min="-2.8" max="3" step="0.01" value="2"><b id="rdbv"></b></div>
+<svg id="rdsv" viewBox="0 0 600 270"></svg><div class="ro" id="rdro"></div>
+<p class="mut">Left: f with its secant. Right: g = f − (secant). The secant becomes the flat line y = 0, and the end heights match, so Rolle applies. The green dot on the right (flat tangent of g) is the same c as the green point on the left (tangent parallel to the secant).</p>
+<h3>The chain of results (each reduces to the one before)</h3>
+<div class="box">Rolle ⇒ MVT ⇒ (f′ = 0 ⇒ f is constant) ⇒ (f′ = g′ ⇒ f = g + C) ⇒ the “+C” of antiderivatives.<br>
+<b>Proof of “f′=0 ⇒ f constant”:</b> take any x₁ &lt; x₂ in the interval. MVT gives c with f(x₂) − f(x₁) = f′(c)(x₂ − x₁) = 0·(x₂ − x₁) = 0. So f(x₂) = f(x₁) for all pairs. ∎</div>
+<h3>B · Contradiction (reductio ad absurdum)</h3>
+<div class="box"><b>Three steps:</b><br>
+1. <b>Assume the opposite</b> of what you want to prove.<br>
+2. <b>Argue correctly</b> until you reach something impossible (a contradiction).<br>
+3. <b>Conclude</b> the assumption was false, so the original statement is true.</div>
+<p><b>Example ①: x³ + x − 1 = 0 has exactly one real root.</b><br>
+Existence: f(0) = −1 and f(1) = 1, so the IVT gives a root in (0,1).<br>
+Uniqueness: <i>assume</i> there are two roots r₁ &lt; r₂. Then f(r₁) = f(r₂) = 0, so Rolle gives c in (r₁, r₂) with f′(c) = 3c² + 1 = 0. But 3c² + 1 ≥ 1 &gt; 0 for every c. Contradiction, so there cannot be two roots. ∎</p>
+<p><b>Example ②: x³ − 3x + k = 0 has at most one root in [−1, 1], for every constant k.</b><br>
+<i>Assume</i> two roots a &lt; b in [−1,1]. Rolle gives c in (a,b) with f′(c) = 3c² − 3 = 0, so c = ±1. But (a,b) lies inside [−1,1], so c is strictly between −1 and 1. Contradiction. ∎</p>
+<p><b>Example ③: no differentiable f has f(0) = 0, f(2) = 6 and f′(x) &lt; 2 for all x.</b><br>
+<i>Assume</i> such an f exists. MVT gives c with f′(c) = (6 − 0)/(2 − 0) = 3. But f′(c) &lt; 2. Contradiction. ∎</p>
+<div class="box"><b>Pattern in Examples ① and ②:</b> “Two roots” ⇒ (Rolle) a flat tangent between them ⇒ but f′ is never 0 there ⇒ contradiction. Whenever f′ has no zero on an interval, f has at most one root there.</div></section>
+<section><h2>3 · Linearization and Differentials</h2>
+<h3>3a · Geometric idea</h3>
+<p>Zoom in on a smooth curve at x=c and it looks like its tangent line.</p>
+<h3>3b · Algebraic idea: you don’t need f(x)</h3>
+<div class="box">All you know: the point <b>f(c)</b> and slope <b>f′(c)</b>. The tangent line there is<br><b>L(x) = f(c) + f′(c)(x − c)</b>,&nbsp; and f(x) ≈ L(x) near c.</div>
+<div class="ctl">f: <select id="lf"><option value="0">√x at c=4</option><option value="1">x³ at c=2</option><option value="2">sin x at c=0</option></select>
+position <input type="range" id="lt" min="-1" max="1" step="0.02" value="0.6">
+zoom <input type="range" id="lz" min="0" max="2" step="0.05" value="0"></div>
+<svg id="lsv" viewBox="0 0 600 270"></svg><div class="ro" id="lro"></div>
+<p>Drag zoom right: the curve and the tangent become indistinguishable. That is why linearization works.</p>
+<h3>Worked examples</h3>
+<p>① √4.1: f(4)=2, f′(4)=1/4 ⇒ L(4.1)=2+0.1/4=<b>2.025</b> (true 2.02485).<br>
+② (2.01)³: f(2)=8, f′(2)=12 ⇒ L(2.01)=8+12(0.01)=<b>8.12</b> (true 8.120601).<br>
+③ Standard ones at c=0: sin x≈x, (1+x)ᵏ≈1+kx, eˣ≈1+x.</p>
+<h3>3c · Differentials, step by step</h3>
+<div class="box"><b>Step 1: the true change.</b> Let y = f(x). If x changes by a small amount Δx (from x to x + Δx), then y changes by<br><b>Δy = f(x + Δx) − f(x)</b>.<br>Example: f(x) = x³, x = 2, Δx = 0.01: Δy = (2.01)³ − 2³.</div>
+<div class="box"><b>Step 2: the problem.</b> Computing Δy needs f at the new point, which can be hard by hand (try 2.01³). We want a quick estimate that uses only information at x.</div>
+<div class="box"><b>Step 3: use the tangent line.</b> Near x, the curve is almost the same as its tangent. Moving a horizontal distance Δx along the tangent line raises it by (slope) × (run) = <b>f′(x) · Δx</b>. That rise is easy to compute.</div>
+<div class="box"><b>Step 4: define the differentials.</b><br>
+<b>dx = Δx</b> (the differential of x: just the chosen small step, any number)<br>
+<b>dy = f′(x) dx</b> (the differential of y: the rise along the <i>tangent</i>)<br>
+Difference: Δy is the rise along the <i>curve</i>, dy is the rise along the <i>tangent</i>.<br>
+This is why dy/dx = f′(x) can be read as a genuine ratio of two small quantities.</div>
+<div class="box"><b>Step 5: compare dy and Δy.</b> Use the simulation: drag dx and watch the orange piece (dy) and the red piece (the error Δy − dy).</div>
+<div class="ctl">f(x)=x³ at x=2, dx <input type="range" id="dd" min="0.02" max="1" step="0.01" value="0.5"><b id="ddv"></b></div>
+<svg id="dsv" viewBox="0 0 600 270"></svg><div class="ro" id="dro"></div>
+<div class="box"><b>Step 6: use dy to estimate a new value.</b><br>
+Idea in words: <b>new value = old value + change</b>. We don’t know the true change Δy, so we use its easy estimate dy:<br>
+<b>f(x + dx) ≈ f(x) + dy</b>, &nbsp; where dy = f′(x) · dx.<br><br>
+<b>Example: estimate (2.01)³ without a calculator.</b><br>
+① Choose f(x) = x³ and a nearby point that is easy: x = 2. Old value: f(2) = 8.<br>
+② Slope there: f′(x) = 3x², so f′(2) = 12.<br>
+③ Step size: dx = 2.01 − 2 = 0.01.<br>
+④ Estimated change: dy = 12 × 0.01 = 0.12.<br>
+⑤ New value ≈ 8 + 0.12 = <b>8.12</b>.<br>
+Picture: you stand at height 8 on a hill whose slope is 12. Take a tiny step 0.01 to the right and you rise about 12 × 0.01 = 0.12. (This is the same as the linearization L(x).)</div>
+<div class="box"><b>Step 7: how wrong is the estimate?</b><br>
+Error = true change − estimated change = Δy − dy.<br>
+For (2.01)³: true value = 8.120601, estimate = 8.12, so the error is 8.120601 − 8.12 = <b>0.000601</b>. Very small.<br>
+<b>How is the true change Δy found?</b> Directly, by evaluating f at both points: Δy = f(2 + dx) − f(2). For dx = 0.1: 2.1³ − 2³ = 9.261 − 8 = 1.261. (We do this only to check the estimate; in practice you skip it.)
+<div class="scroll"><table><tr><th>step dx</th><th>estimated change dy = 12·dx</th><th>true change Δy</th><th>error = Δy − dy</th></tr>
+<tr><td>1</td><td>12</td><td>19</td><td>7</td></tr><tr><td>0.5</td><td>6</td><td>7.625</td><td>1.625</td></tr><tr><td>0.1</td><td>1.2</td><td>1.261</td><td>0.061</td></tr><tr><td>0.01</td><td>0.12</td><td>0.120601</td><td>0.000601</td></tr></table></div>
+<b>What the table shows:</b><br>
+• A big step (dx = 1) gives a poor estimate: 12 instead of 19.<br>
+• A small step gives an excellent estimate.<br>
+• Look at dx = 0.1 → 0.01. The step becomes 10 times smaller, but the error goes from 0.061 to 0.0006, about 100 times smaller. The error shrinks like dx². So halving dx makes the error about 4 times smaller.<br>
+<b>Why:</b> the curve bends away from its tangent line, and the gap grows with the square of the distance from the touching point.<br>
+<b>Algebra check (optional):</b> Δy = (2 + dx)³ − 8 = 12·dx + 6·dx² + dx³. The first term, 12·dx, is exactly dy. The rest, 6·dx² + dx³, is the error, and it contains dx², which explains the pattern.<br>
+<b>Takeaway:</b> always use a small dx.</div>
+<div class="box"><b>Step 8: error in measurement (the main application).</b> If x is measured with error dx, then y = f(x) has<br>absolute error ≈ <b>dy = f′(x) dx</b>, relative error ≈ <b>dy / y</b>, percentage error = (dy / y) × 100%.<br>
+<b>Example (sphere):</b> radius r = 10 cm measured with error dr = 0.1 cm. V = (4/3)πr³, so dV = 4πr² dr = 4π(100)(0.1) ≈ 125.7 cm³. V = (4/3)π(1000) ≈ 4188.8 cm³, so dV/V = 3 dr/r = 0.03, a <b>3%</b> volume error from a 1% radius error.<br>
+<b>Example (square):</b> side x = 10 cm, dx = 0.2: A = x², dA = 2x dx = 2(10)(0.2) = 4 cm², so dA/A = 4/100 = 4%. A 2% error in the side (0.2/10) gives about a <b>4%</b> error in the area.</div>
+<div class="box"><b>Common mistakes:</b> (1) writing dy = Δy (they are equal only for a straight line); (2) using a large dx (the tangent drifts away from the curve); (3) forgetting that dx is the <i>input</i> change and dy the predicted <i>output</i> change; (4) mixing units of dx and f′(x).</div>
+<p><b>Differential rules</b> (just the derivative rules with dx attached): d(c) = 0, d(xⁿ) = n xⁿ⁻¹ dx, d(sin x) = cos x dx, d(eˣ) = eˣ dx, d(u + v) = du + dv, d(uv) = u dv + v du.</p>
+<p class="mut">Check question: the area of a circle is A = πr². If r = 5 changes to 5.1, estimate the change in area with a differential. (dA = 2πr dr = 2π(5)(0.1) = π ≈ 3.142. True change: π(5.1² − 5²) = 1.01π ≈ 3.173, so the estimate is off by only about 0.03.)</p>
+</section>
+
+<section><h2>Quick exercise</h2>
+<p>Estimate ∛8.2 using linearization at c=8. Type your answer:</p>
+<div class="ctl"><input type="text" id="qa" placeholder="e.g. 2.0166" size="10"><button id="qb">Check</button><button id="qs">Show solution</button></div>
+<div class="ro" id="qr"></div></section>
+
+<section><h2>4 · Antiderivatives</h2>
+<div class="say">“Derivative: given the function, find the slope. Antiderivative: given the slope, find the function.”</div>
+<p>F is an antiderivative of f on an interval if F′(x)=f(x). By MVT corollary ②, <b>every</b> antiderivative is F(x)+C. We write ∫f(x)dx = F(x)+C.</p>
+<div class="scroll"><table><tr><th>f(x)</th><th>xⁿ (n≠−1)</th><th>1/x</th><th>eˣ</th><th>sin x</th><th>cos x</th><th>sec²x</th><th>k (const)</th></tr>
+<tr><th>∫f dx</th><td>xⁿ⁺¹/(n+1)+C</td><td>ln|x|+C</td><td>eˣ+C</td><td>−cos x+C</td><td>sin x+C</td><td>tan x+C</td><td>kx+C</td></tr></table></div>
+<p>Rules: ∫kf = k∫f and ∫(f±g)=∫f±∫g. Always check by differentiating your answer.</p>
+<h3>Simulation: the family F(x)+C and fixing C</h3>
+<div class="ctl">f(x): <select id="af"></select> C <input type="range" id="ac" min="-5" max="5" step="0.1" value="0"><b id="acv"></b><button id="afit">Fit to the point</button></div>
+<svg id="asv" viewBox="0 0 600 270"></svg><div class="ro" id="aro"></div>
+<p class="mut">All curves have the same slope at each x (parallel tangents). An initial condition, the red point, picks one.</p>
+<h3>Worked examples</h3>
+<p>① ∫(x⁴ + 3x) dx = x⁵/5 + 3x²/2 + C<br>
+② ∫(2 sin x − 5eˣ) dx = −2cos x − 5eˣ + C<br>
+③ ∫(1/x + 1/x²) dx = ln|x| − 1/x + C &nbsp; (write 1/x² as x⁻²)<br>
+④ Initial value: f′(x)=3x²−2, f(1)=4 ⇒ f=x³−2x+C, 1−2+C=4 ⇒ C=5 ⇒ <b>f(x)=x³−2x+5</b>.<br>
+⑤ Motion: a(t)=6t, v(0)=1, s(0)=2 ⇒ v=3t²+1 ⇒ s=t³+t+2.</p></section>
+
+<section><h2>5 · Preview: area of a curved shape</h2>
+<div class="say">“We can measure rectangles and triangles. How would you find the area under y=x²?”</div>
+<div class="ctl">Try right-end rectangles, n = <input type="range" id="pn" min="1" max="30" value="3"><b id="pnv"></b></div>
+<svg id="psv" viewBox="0 0 600 240"></svg><div class="ro" id="pro"></div>
+<p>Next session: lower, upper and midpoint sums, sigma notation, and Archimedes’ circle.<br><b>Homework:</b> verify Rolle for f(x)=x³−3x on [−√3, √3]; apply MVT to √x on [1,4]; linearize ln x at 1 to estimate ln 1.05; solve f′(x)=cos x + 2, f(0)=1.</p></section>
 </main>
 <script>
 const $=id=>document.getElementById(id),NS="http://www.w3.org/2000/svg",css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
