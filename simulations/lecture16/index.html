@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lecture 16: Intermediate Value Theorm | Rolle’s Theorem | Mean Value Theorem </title>
+<style>
+:root{--bg:#fafaf7;--fg:#1d1d1b;--mut:#6b6b66;--card:#fff;--bd:#dcdcd4;--ac:#1a5fb4;--ac2:#c2410c;--ok:#15803d;--bad:#b91c1c;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#17181a;--fg:#ecece6;--mut:#9a9a94;--card:#202225;--bd:#3a3d41;--ac:#6ea8fe;--ac2:#fb923c;--ok:#4ade80;--bad:#f87171;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#17181a;--fg:#ecece6;--mut:#9a9a94;--card:#202225;--bd:#3a3d41;--ac:#6ea8fe;--ac2:#fb923c;--ok:#4ade80;--bad:#f87171;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 Georgia,"Times New Roman",serif}
+main{max-width:820px;margin:auto;padding:16px}
+h1{font-size:1.7rem;margin:.3em 0}h2{font-size:1.35rem;margin:0 0 .4em;color:var(--ac)}h3{font-size:1.05rem;margin:1em 0 .2em}
+section{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:16px;margin:16px 0}
+.tag{display:inline-block;font:600 .75rem system-ui,sans-serif;background:var(--ac);color:var(--bg);border-radius:20px;padding:2px 10px}
+.mut{color:var(--mut);font-size:.9rem}
+.say{border-left:3px solid var(--ac2);padding:2px 12px;margin:8px 0;font-style:italic}
+.box{background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:8px 12px;margin:8px 0}
+.ctl{display:flex;flex-wrap:wrap;gap:10px;align-items:center;font:.85rem system-ui,sans-serif;margin:6px 0}
+.ctl input[type=range]{flex:1;min-width:120px}
+button,select,input[type=text]{font:.85rem system-ui,sans-serif;padding:4px 10px;border-radius:6px;border:1px solid var(--bd);background:var(--bg);color:var(--fg)}
+svg{width:100%;height:auto;background:var(--bg);border:1px solid var(--bd);border-radius:8px}
+.ro{font:.85rem/1.5 ui-monospace,Menlo,monospace}
+.scroll{overflow-x:auto}table{border-collapse:collapse;font-size:.92rem}td,th{border:1px solid var(--bd);padding:4px 10px;text-align:center}
+.tl{display:flex;height:26px;border-radius:6px;overflow:hidden;font:600 .7rem system-ui,sans-serif;color:#fff}.tl div{display:flex;align-items:center;justify-content:center}
+</style></head><body><main>
+<span class="tag">Foundation Maths · Session 1 · 90 min</span>
+<h1>Finish Derivatives, Start Antiderivatives</h1>
+<p class="mut">Follows Thomas’ Calculus Ch. 4 (§4.2 Rolle/MVT, §4.6 Linearization and Differentials, §4.8 Antiderivatives). Every section has a live simulation: project this page and drive it with the sliders.</p>
+<div class="tl"><div style="width:11%;background:#1a5fb4">Rolle 10</div><div style="width:17%;background:#2563eb">MVT 15</div><div style="width:28%;background:#7c3aed">Linearize 25</div><div style="width:6%;background:#888"></div><div style="width:33%;background:#0f766e">Antiderivatives 30</div><div style="width:5%;background:#c2410c"></div></div>
+
+<section><span class="tag">Warm-up · 5 min (take it from the Rolle slot)</span><h2>0 · Before Rolle: what do “continuous” and “differentiable” mean?</h2>
+<div class="say">Idea first: “Continuous: you can draw the graph without lifting your pen. Differentiable: the graph is smooth, with no corner, so one tangent line exists.” The definitions below make these ideas precise.</div>
+<h3>Definition 1: continuous at a point</h3>
+<div class="box">f is <b>continuous at x=c</b> if all three hold:<br>(i) f(c) is defined;<br>(ii) lim<sub>x→c</sub> f(x) exists, meaning the left-hand limit lim<sub>x→c⁻</sub> f(x) and the right-hand limit lim<sub>x→c⁺</sub> f(x) both exist and are equal;<br>(iii) lim<sub>x→c</sub> f(x) = f(c).<br>In short: <b>lim<sub>x→c</sub> f(x) = f(c)</b>. Continuity fails at c when there is a hole, a jump, or a break.</div>
+<div id="fig1"></div>
+<h3>Definition 2: continuous on an interval</h3>
+<div class="box"><b>[a,b]</b> (closed interval) includes its endpoints; <b>(a,b)</b> (open interval) does not.<br>f is continuous on (a,b) if it is continuous at every c in (a,b).<br>f is continuous on [a,b] if it is continuous on (a,b) <i>and</i> at the endpoints from the inside: lim<sub>x→a⁺</sub> f(x) = f(a) and lim<sub>x→b⁻</sub> f(x) = f(b).</div>
+<div id="fig2"></div>
+<h3>Definition 3: differentiable</h3>
+<div class="box">The <b>derivative</b> of f at c is <b>f′(c) = lim<sub>h→0</sub> [f(c+h) − f(c)] / h</b>, provided this limit exists as a finite number (the limits from h→0⁻ and h→0⁺ must be equal). Then f is <b>differentiable at c</b>.<br>f is differentiable on (a,b) if f′(c) exists for every c in (a,b).<br>Geometric meaning: the graph has one non-vertical tangent line at c, with slope f′(c). A corner, a cusp, a vertical tangent, or a jump means the derivative does not exist.</div>
+<div id="fig3"></div>
+<div class="box"><b>Key relationship:</b> differentiable at c ⇒ continuous at c. The reverse is false: |x| is continuous at 0 but not differentiable there. Rolle’s Theorem asks for differentiability only on the open interval (a,b), because a derivative at an endpoint would need values of f outside [a,b].</div>
+<svg viewBox="0 0 420 200" style="max-width:520px;display:block;margin:8px auto"><ellipse cx="210" cy="100" rx="200" ry="92" style="fill:var(--ac);fill-opacity:.12;stroke:var(--ac)" stroke-width="2"/><ellipse cx="210" cy="120" rx="115" ry="56" style="fill:var(--ok);fill-opacity:.18;stroke:var(--ok)" stroke-width="2"/>
+<g font-family="system-ui" font-size="12" text-anchor="middle" style="fill:var(--fg)"><text x="210" y="26" style="fill:var(--ac);font-weight:600">Continuous at c</text><text x="210" y="95" style="fill:var(--ok);font-weight:600">Differentiable at c</text><text x="210" y="122">x² at any c</text><text x="210" y="140">polynomials, sin x, eˣ</text><text x="50" y="104">|x| at 0</text><text x="50" y="118">(corner)</text><text x="370" y="104">x^(2/3) at 0</text><text x="370" y="118">(cusp)</text></g>
+<g font-family="system-ui" font-size="12" style="fill:var(--fg)"><text x="6" y="190">outside: step at 0 (jump)</text><text x="414" y="190" text-anchor="end">1/x at 0 (break)</text></g></svg>
+<p class="mut" style="text-align:center">Every differentiable point lies inside the continuous region. The ring between the two ovals is “continuous but not differentiable”.</p>
+<h3>Examples</h3>
+<div class="scroll"><table><tr><th>Function, point</th><th>Continuous at c?</th><th>Differentiable at c?</th></tr>
+<tr><td>x², any c</td><td>yes: lim f(x) = f(c)</td><td>yes: f′(c) = 2c</td></tr>
+<tr><td>|x|, c = 0</td><td>yes: both one-sided limits are 0 = f(0)</td><td>no: left slope −1, right slope +1 (corner)</td></tr>
+<tr><td>step: f(x)=0 for x&lt;0, f(x)=1 for x≥0; c = 0</td><td>no: left limit 0, right limit 1, so lim f(x) does not exist</td><td>no (a function that is not continuous cannot be differentiable)</td></tr></table></div>
+<h3>Simulation: drag c and squeeze h</h3>
+<div class="ctl">f: <select id="wf"><option value="0">x² (smooth)</option><option value="1">|x| (corner at 0)</option><option value="2">step (jump at 0)</option></select>c <input type="range" id="wc" min="-1.5" max="1.5" step="0.01" value="0.8"><b id="wcv"></b><button id="w0">Go to c = 0</button> h <input type="range" id="wh" min="0.02" max="1" step="0.01" value="0.6"><b id="whv"></b></div>
+<svg id="wsv" viewBox="0 0 600 270"></svg><div class="ro" id="wro"></div>
+<p class="mut">Blue dot = point at x=c−h, orange dot = point at x=c+h. Shrink h and watch where they head. Move c to 0 on |x| and on the step to see what breaks.</p>
+<div class="box"><b>How these appear in Rolle’s Theorem</b> (called checks ①, ②, ③ below):<br>① f is continuous on [a,b] (Definitions 1 and 2)<br>② f is differentiable on (a,b) (Definition 3)<br>③ f(a) = f(b) (same height at both ends)</div></section>
+<section><span class="tag">Warm-up · 3–5 min</span><h2>0b · The Intermediate Value Theorem (IVT)</h2>
+<div class="say">“At age 5 you were 1.2 m tall, at age 15 you were 1.7 m. At some age you were exactly 1.5 m, because growth has no jumps.”</div>
+<div class="box"><b>Intermediate Value Theorem.</b> If f is continuous on [a,b] and N is any number between f(a) and f(b), then there is at least one c in [a,b] with <b>f(c) = N</b>.<br>
+Geometry: a continuous graph from the height f(a) to the height f(b) must cross every horizontal line y = N in between. It cannot skip a height without lifting the pen.</div>
+<p><b>Careful:</b> the theorem says such a c <i>exists</i>. It does not say where c is, or that c is the only one. Continuity on [a,b] (Definition 2) is essential: a jump can skip a height.</p>
+<h3>Simulation: slide N between f(a) and f(b)</h3>
+<div class="ctl">f: <select id="ivf"><option value="0">x² − 2 on [0,3]</option><option value="1">cos x on [0,3]</option><option value="2">jump function on [0,3]</option></select>N <input type="range" id="ivn" min="0" max="1" step="0.01" value="0.4"><b id="ivv"></b></div>
+<svg id="ivsv" viewBox="0 0 600 270"></svg><div class="ro" id="ivro"></div>
+<p class="mut">The jump function is f(x)=x for x&lt;1.5 and f(x)=x+2 for x≥1.5. It is not continuous at 1.5, and the heights between 1.5 and 3.5 are skipped, so the theorem does not apply.</p>
+<h3>Worked examples</h3>
+<p>① Show x³ + x − 1 = 0 has a solution in [0,1]. f is continuous (a polynomial), f(0) = −1 &lt; 0 and f(1) = 1 &gt; 0. Since 0 is between f(0) and f(1), IVT gives c in (0,1) with f(c)=0.<br>
+② Does x⁵ − 3x + 1 = 0 have a root in [0,1]? f(0)=1 and f(1)=−1, so yes.<br>
+③ Existence of √2: f(x)=x²−2 on [1,2] has f(1)=−1 and f(2)=2, so some c in (1,2) satisfies c²=2.</p>
+<h3>Where the IVT is used</h3>
+<div class="box"><b>Root finding:</b> if f changes sign on [a,b], a root is trapped inside. Halving the interval again and again (the bisection method) is how calculators and computers solve equations.<br>
+<b>Existence proofs:</b> it shows a solution exists before you try to find it, for example in the root-counting example for Rolle’s Theorem below.<br>
+<b>Real life:</b> temperature, speed and height change continuously, so they pass through every value in between.</div></section>
+<section><span class="tag">0:00 – 0:10</span><h2>1 · Rolle’s Theorem</h2>
+<div class="box"><b>Teaching order: Rolle first, then MVT.</b> This is the order in Thomas’ Calculus too. Rolle is the simple special case (flat secant), and the proof of the MVT uses Rolle. If you taught MVT first, you could not prove it from simpler facts.</div>
+<div class="say">“A ball thrown up leaves your hand at height 2 m and lands at height 2 m. At the top it is not moving up or down.”</div>
+<div class="box"><b>Rolle’s Theorem.</b> Suppose ① f is continuous on [a,b], ② f is differentiable on (a,b), and ③ f(a)=f(b) (definitions in Section 0). Then there is at least one c in (a,b) with <b>f′(c)=0</b>.</div>
+<p><b>Geometry:</b> a curve starting and ending at the same height must have a flat tangent somewhere in between.</p>
+<h3>Animation: the ball (choose a motion)</h3>
+<div class="ctl">Motion: <select id="bm"><option value="up">Thrown up (a maximum)</option><option value="dn">Pushed down, comes back (a minimum)</option><option value="both">Up, down, back (maximum AND minimum)</option></select><button id="bplay">⏸ Pause</button><button id="btop">Jump to next flat point</button> speed <select id="bsp"><option value="0.25">slow</option><option value="0.5" selected>normal</option><option value="1">fast</option></select> time <input type="range" id="bt" min="0" max="2" step="0.01" value="0"></div>
+<svg id="bsv" viewBox="0 0 600 260"></svg><div class="ro" id="bro"></div>
+<p class="mut">Left: the ball (arrow = velocity). Right: its height graph with the tangent line. In every motion the ball starts and ends at 2 m, so Rolle guarantees a moment with velocity 0, i.e. a <b>flat tangent</b>. It is a <b>maximum</b> when the ball turns from rising to falling, a <b>minimum</b> when it turns from falling to rising. The third motion has <u>two</u> such moments: Rolle promises at least one, not exactly one.</p>
+<h3>Simulation: test the hypotheses</h3>
+<div class="ctl">Choose: <select id="rf"></select></div>
+<svg id="rsv" viewBox="0 0 600 260"></svg><div class="ro" id="rro"></div>
+<p><b>Example:</b> f(x)=x²−4x+3 on [1,3]. f(1)=f(3)=0 and f′(x)=2x−4=0 ⇒ <b>c=2</b>.<br>
+<b>Counterexamples</b> (each breaks exactly one check, and then there is no flat tangent):<br>
+• f(x)=|x| on [−1,1]: ① holds and ③ holds (f(−1)=1=f(1)), but ② <b>fails at x=0</b>: left slope −1, right slope +1, so f′(0) does not exist. The graph has a corner at its lowest point, not a flat tangent.<br>
+• f(x)=x for 0≤x&lt;1 and f(1)=0, on [0,1]: ③ holds (f(0)=f(1)=0) and ② holds inside, but ① <b>fails at x=1</b>: the limit from the left is 1, while f(1)=0.<br>
+• f(x)=x on [0,1]: ① and ② hold, but ③ <b>fails</b> (f(0)=0 ≠ 1=f(1)), and indeed f′(x)=1 is never 0.<br>
+So all three checks are needed.</p>
+<h3>Where Rolle’s Theorem is used</h3>
+<div class="box"><b>① Counting roots.</b> Show x³ + x − 1 = 0 has exactly one real root. f(0)=−1 and f(1)=1, so a root exists between 0 and 1 (Intermediate Value Theorem, Section 0b). Suppose there were two roots r₁&lt;r₂. Then f(r₁)=f(r₂)=0, so Rolle gives a c with f′(c)=3c²+1=0. But 3c²+1 ≥ 1 &gt; 0. Contradiction, so only one root.<br>
+<b>② Proving the MVT.</b> Subtract the secant line from f. The new function is 0 at both ends, so Rolle applies (see MVT section).<br>
+<b>③ Real-life meaning:</b> any motion that returns to its starting position (a thrown ball, a swing, a piston) must have an instant of zero velocity. Rolle is the base for finding maxima and minima: flat tangents are where they occur.</div></section>
+
+<section><span class="tag">0:10 – 0:25</span><h2>2 · Mean Value Theorem</h2>
+<div class="say">“120 km in 1 hour means the average speed was 120. At some instant the speedometer read exactly 120.”</div>
+<div class="box"><b>MVT.</b> If f is continuous on [a,b] and differentiable on (a,b), there is c in (a,b) with<br><b>f′(c) = (f(b) − f(a)) / (b − a).</b></div>
+<p>Geometry: some tangent is parallel to the secant. Rolle is the case where the secant is flat.</p>
+<h3>The picture (example f(x) = x² on [1, 3])</h3>
+<svg id="mfig" viewBox="0 0 600 300"></svg>
+<div class="box"><b>The equation, read from the picture:</b><br>
+<b>f′(c) = [ f(b) − f(a) ] / ( b − a )</b> &nbsp; (slope of the tangent at c = slope of the secant from A to B)<br>
+Here: f′(c) = 2c and [ f(b) − f(a) ] / ( b − a ) = (9 − 1) / (3 − 1) = 8/2 = 4, so 2c = 4 and <b>c = 2</b>, which lies in (1, 3) ✓.<br>
+Equivalent form: f(b) − f(a) = f′(c)(b − a): the total change equals (a tangent slope) × (the width).</div>
+<div class="ctl">f: <select id="mf"><option value="0">x²/2 + 1</option><option value="1">x³/3 − x</option><option value="2">sin x</option></select>
+a <input type="range" id="ma" min="-3" max="2.8" step="0.01" value="-2"><b id="mav"></b>
+b <input type="range" id="mb" min="-2.8" max="3" step="0.01" value="2"><b id="mbv"></b></div>
+<svg id="msv" viewBox="0 0 600 270"></svg><div class="ro" id="mro"></div>
+<p><b>Example:</b> f(x)=x² on [1,3]: secant slope (9−1)/2=4; f′(c)=2c=4 ⇒ c=2.</p>
+<h3>Corollaries (the bridge to antiderivatives)</h3>
+<div class="box">① If f′(x)=0 on an interval, then f is constant there.<br>
+② If f′(x)=g′(x) on an interval, then <b>f(x)=g(x)+C</b>. (Apply ① to f−g.)</div>
+<p class="mut">Check question: f(0)=0, f(2)=6. Must f′ reach 3 somewhere? Yes, by MVT.</p>
+<h3>Why MVT follows from Rolle</h3>
+<div class="box">Let m = (f(b)−f(a))/(b−a) and g(x) = f(x) − [f(a) + m(x−a)] (the curve minus the secant line). Then g(a)=g(b)=0, and g is continuous and differentiable like f. Rolle gives c with g′(c)=0, i.e. f′(c) − m = 0, so f′(c)=m.</div>
+<h3>Where the MVT is used</h3>
+<div class="box"><b>① Speed cameras.</b> A car passes camera A at 10:00 and camera B, 100 km away, at 10:50. Average speed = 100/(5/6) = 120 km/h. By MVT the speedometer read exactly 120 at some instant, so the car broke a 100 km/h limit even if no camera saw it.<br>
+<b>② Increasing/decreasing test.</b> If f′&gt;0 on an interval then f is increasing there (apply MVT to any two points). This is how you find where a graph rises and falls.<br>
+<b>③ Inequalities and error bounds.</b> |sin b − sin a| = |cos c||b−a| ≤ |b−a|. In general, if |f′|≤K then |f(b)−f(a)|≤K|b−a|.<br>
+<b>④ Antiderivatives.</b> f′=0 ⇒ f is constant, which gives the “+C”.<br>
+<b>⑤ Later topics:</b> it is the key step in proving the Fundamental Theorem of Calculus, Taylor’s theorem with remainder, and L’Hôpital’s rule.</div></section>
+
+<section><span class="tag">Optional · 5–8 min</span><h2>2b · Proof techniques: reduction and contradiction</h2>
+<p class="mut">Two proof ideas appear again and again in this chapter. Both are worth naming for students. (If you meant a different “reduction proof”, tell me and I will adjust this section.)</p>
+<h3>A · Reduction: turn a new problem into one you already solved</h3>
+<div class="say">“I don’t know how to prove the MVT directly. But I do know Rolle. Can I <i>reduce</i> the MVT to Rolle?”</div>
+<div class="box"><b>Proof of the MVT by reduction to Rolle.</b> Let m = [f(b) − f(a)]/(b − a) and define the new function<br>
+<b>g(x) = f(x) − [ f(a) + m(x − a) ]</b> (the curve minus the secant line).<br>
+① g is continuous on [a,b] and differentiable on (a,b), because f is and the line is.<br>
+② g(a) = f(a) − f(a) = 0 and g(b) = f(b) − f(a) − m(b − a) = 0. So g(a) = g(b).<br>
+③ Rolle applies to g: there is c in (a,b) with g′(c) = 0.<br>
+④ g′(x) = f′(x) − m, so f′(c) − m = 0, i.e. <b>f′(c) = m</b>. ∎</div>
+<h3>Simulation: watch the reduction happen</h3>
+<div class="ctl">f: <select id="rdf"><option value="0">x³/3 − x</option><option value="1">sin x</option><option value="2">x²/2</option></select>
+a <input type="range" id="rda" min="-3" max="2.8" step="0.01" value="-2"><b id="rdav"></b>
+b <input type="range" id="rdb" min="-2.8" max="3" step="0.01" value="2"><b id="rdbv"></b></div>
+<svg id="rdsv" viewBox="0 0 600 270"></svg><div class="ro" id="rdro"></div>
+<p class="mut">Left: f with its secant. Right: g = f − (secant). The secant becomes the flat line y = 0, and the end heights match, so Rolle applies. The green dot on the right (flat tangent of g) is the same c as the green point on the left (tangent parallel to the secant).</p>
+<h3>The chain of results (each reduces to the one before)</h3>
+<div class="box">Rolle ⇒ MVT ⇒ (f′ = 0 ⇒ f is constant) ⇒ (f′ = g′ ⇒ f = g + C) ⇒ the “+C” of antiderivatives.<br>
+<b>Proof of “f′=0 ⇒ f constant”:</b> take any x₁ &lt; x₂ in the interval. MVT gives c with f(x₂) − f(x₁) = f′(c)(x₂ − x₁) = 0·(x₂ − x₁) = 0. So f(x₂) = f(x₁) for all pairs. ∎</div>
+<h3>B · Contradiction (reductio ad absurdum)</h3>
+<div class="box"><b>Three steps:</b><br>
+1. <b>Assume the opposite</b> of what you want to prove.<br>
+2. <b>Argue correctly</b> until you reach something impossible (a contradiction).<br>
+3. <b>Conclude</b> the assumption was false, so the original statement is true.</div>
+<p><b>Example ①: x³ + x − 1 = 0 has exactly one real root.</b><br>
+Existence: f(0) = −1 and f(1) = 1, so the IVT gives a root in (0,1).<br>
+Uniqueness: <i>assume</i> there are two roots r₁ &lt; r₂. Then f(r₁) = f(r₂) = 0, so Rolle gives c in (r₁, r₂) with f′(c) = 3c² + 1 = 0. But 3c² + 1 ≥ 1 &gt; 0 for every c. Contradiction, so there cannot be two roots. ∎</p>
+<p><b>Example ②: x³ − 3x + k = 0 has at most one root in [−1, 1], for every constant k.</b><br>
+<i>Assume</i> two roots a &lt; b in [−1,1]. Rolle gives c in (a,b) with f′(c) = 3c² − 3 = 0, so c = ±1. But (a,b) lies inside [−1,1], so c is strictly between −1 and 1. Contradiction. ∎</p>
+<p><b>Example ③: no differentiable f has f(0) = 0, f(2) = 6 and f′(x) &lt; 2 for all x.</b><br>
+<i>Assume</i> such an f exists. MVT gives c with f′(c) = (6 − 0)/(2 − 0) = 3. But f′(c) &lt; 2. Contradiction. ∎</p>
+<div class="box"><b>Pattern in Examples ① and ②:</b> “Two roots” ⇒ (Rolle) a flat tangent between them ⇒ but f′ is never 0 there ⇒ contradiction. Whenever f′ has no zero on an interval, f has at most one root there.</div></section>
+<section><span class="tag">0:25 – 0:50</span><h2>3 · Linearization and Differentials</h2>
+<h3>3a · Geometric idea (10 min)</h3>
+<p>Zoom in on a smooth curve at x=c and it looks like its tangent line.</p>
+<h3>3b · Algebraic idea: you don’t need f(x)</h3>
+<div class="box">All you know: the point <b>f(c)</b> and slope <b>f′(c)</b>. The tangent line there is<br><b>L(x) = f(c) + f′(c)(x − c)</b>,&nbsp; and f(x) ≈ L(x) near c.</div>
+<div class="ctl">f: <select id="lf"><option value="0">√x at c=4</option><option value="1">x³ at c=2</option><option value="2">sin x at c=0</option></select>
+position <input type="range" id="lt" min="-1" max="1" step="0.02" value="0.6">
+zoom <input type="range" id="lz" min="0" max="2" step="0.05" value="0"></div>
+<svg id="lsv" viewBox="0 0 600 270"></svg><div class="ro" id="lro"></div>
+<p>Drag zoom right: the curve and the tangent become indistinguishable. That is why linearization works.</p>
+<h3>Worked examples (5 min)</h3>
+<p>① √4.1: f(4)=2, f′(4)=1/4 ⇒ L(4.1)=2+0.1/4=<b>2.025</b> (true 2.02485).<br>
+② (2.01)³: f(2)=8, f′(2)=12 ⇒ L(2.01)=8+12(0.01)=<b>8.12</b> (true 8.120601).<br>
+③ Standard ones at c=0: sin x≈x, (1+x)ᵏ≈1+kx, eˣ≈1+x.</p>
+<h3>3c · Differentials, step by step (10–12 min)</h3>
+<div class="box"><b>Step 1: the true change.</b> Let y = f(x). If x changes by a small amount Δx (from x to x + Δx), then y changes by<br><b>Δy = f(x + Δx) − f(x)</b>.<br>Example: f(x) = x³, x = 2, Δx = 0.01: Δy = (2.01)³ − 2³.</div>
+<div class="box"><b>Step 2: the problem.</b> Computing Δy needs f at the new point, which can be hard by hand (try 2.01³). We want a quick estimate that uses only information at x.</div>
+<div class="box"><b>Step 3: use the tangent line.</b> Near x, the curve is almost the same as its tangent. Moving a horizontal distance Δx along the tangent line raises it by (slope) × (run) = <b>f′(x) · Δx</b>. That rise is easy to compute.</div>
+<div class="box"><b>Step 4: define the differentials.</b><br>
+<b>dx = Δx</b> (the differential of x: just the chosen small step, any number)<br>
+<b>dy = f′(x) dx</b> (the differential of y: the rise along the <i>tangent</i>)<br>
+Difference: Δy is the rise along the <i>curve</i>, dy is the rise along the <i>tangent</i>.<br>
+This is why dy/dx = f′(x) can be read as a genuine ratio of two small quantities.</div>
+<div class="box"><b>Step 5: compare dy and Δy.</b> Use the simulation: drag dx and watch the orange piece (dy) and the red piece (the error Δy − dy).</div>
+<div class="ctl">f(x)=x³ at x=2, dx <input type="range" id="dd" min="0.02" max="1" step="0.01" value="0.5"><b id="ddv"></b></div>
+<svg id="dsv" viewBox="0 0 600 270"></svg><div class="ro" id="dro"></div>
+<div class="box"><b>Step 6: use dy to estimate a new value.</b><br>
+Idea in words: <b>new value = old value + change</b>. We don’t know the true change Δy, so we use its easy estimate dy:<br>
+<b>f(x + dx) ≈ f(x) + dy</b>, &nbsp; where dy = f′(x) · dx.<br><br>
+<b>Example: estimate (2.01)³ without a calculator.</b><br>
+① Choose f(x) = x³ and a nearby point that is easy: x = 2. Old value: f(2) = 8.<br>
+② Slope there: f′(x) = 3x², so f′(2) = 12.<br>
+③ Step size: dx = 2.01 − 2 = 0.01.<br>
+④ Estimated change: dy = 12 × 0.01 = 0.12.<br>
+⑤ New value ≈ 8 + 0.12 = <b>8.12</b>.<br>
+Picture: you stand at height 8 on a hill whose slope is 12. Take a tiny step 0.01 to the right and you rise about 12 × 0.01 = 0.12. (This is the same as the linearization L(x).)</div>
+<div class="box"><b>Step 7: how wrong is the estimate?</b><br>
+Error = true change − estimated change = Δy − dy.<br>
+For (2.01)³: true value = 8.120601, estimate = 8.12, so the error is 8.120601 − 8.12 = <b>0.000601</b>. Very small.<br>
+<b>How is the true change Δy found?</b> Directly, by evaluating f at both points: Δy = f(2 + dx) − f(2). For dx = 0.1: 2.1³ − 2³ = 9.261 − 8 = 1.261. (We do this only to check the estimate; in practice you skip it.)
+<div class="scroll"><table><tr><th>step dx</th><th>estimated change dy = 12·dx</th><th>true change Δy</th><th>error = Δy − dy</th></tr>
+<tr><td>1</td><td>12</td><td>19</td><td>7</td></tr><tr><td>0.5</td><td>6</td><td>7.625</td><td>1.625</td></tr><tr><td>0.1</td><td>1.2</td><td>1.261</td><td>0.061</td></tr><tr><td>0.01</td><td>0.12</td><td>0.120601</td><td>0.000601</td></tr></table></div>
+<b>What the table shows:</b><br>
+• A big step (dx = 1) gives a poor estimate: 12 instead of 19.<br>
+• A small step gives an excellent estimate.<br>
+• Look at dx = 0.1 → 0.01. The step becomes 10 times smaller, but the error goes from 0.061 to 0.0006, about 100 times smaller. The error shrinks like dx². So halving dx makes the error about 4 times smaller.<br>
+<b>Why:</b> the curve bends away from its tangent line, and the gap grows with the square of the distance from the touching point.<br>
+<b>Algebra check (optional):</b> Δy = (2 + dx)³ − 8 = 12·dx + 6·dx² + dx³. The first term, 12·dx, is exactly dy. The rest, 6·dx² + dx³, is the error, and it contains dx², which explains the pattern.<br>
+<b>Takeaway:</b> always use a small dx.</div>
+<div class="box"><b>Step 8: error in measurement (the main application).</b> If x is measured with error dx, then y = f(x) has<br>absolute error ≈ <b>dy = f′(x) dx</b>, relative error ≈ <b>dy / y</b>, percentage error = (dy / y) × 100%.<br>
+<b>Example (sphere):</b> radius r = 10 cm measured with error dr = 0.1 cm. V = (4/3)πr³, so dV = 4πr² dr = 4π(100)(0.1) ≈ 125.7 cm³. V = (4/3)π(1000) ≈ 4188.8 cm³, so dV/V = 3 dr/r = 0.03, a <b>3%</b> volume error from a 1% radius error.<br>
+<b>Example (square):</b> side x = 10 cm, dx = 0.2: A = x², dA = 2x dx = 2(10)(0.2) = 4 cm², so dA/A = 4/100 = 4%. A 2% error in the side (0.2/10) gives about a <b>4%</b> error in the area.</div>
+<div class="box"><b>Common mistakes:</b> (1) writing dy = Δy (they are equal only for a straight line); (2) using a large dx (the tangent drifts away from the curve); (3) forgetting that dx is the <i>input</i> change and dy the predicted <i>output</i> change; (4) mixing units of dx and f′(x).</div>
+<p><b>Differential rules</b> (just the derivative rules with dx attached): d(c) = 0, d(xⁿ) = n xⁿ⁻¹ dx, d(sin x) = cos x dx, d(eˣ) = eˣ dx, d(u + v) = du + dv, d(uv) = u dv + v du.</p>
+<p class="mut">Check question: the area of a circle is A = πr². If r = 5 changes to 5.1, estimate the change in area with a differential. (dA = 2πr dr = 2π(5)(0.1) = π ≈ 3.142. True change: π(5.1² − 5²) = 1.01π ≈ 3.173, so the estimate is off by only about 0.03.)</p>
+</section>
+
+<section><span class="tag">0:50 – 0:55</span><h2>Break · Quick exercise</h2>
+<p>Estimate ∛8.2 using linearization at c=8. Type your answer:</p>
+<div class="ctl"><input type="text" id="qa" placeholder="e.g. 2.0166" size="10"><button id="qb">Check</button><button id="qs">Show solution</button></div>
+<div class="ro" id="qr"></div></section>
+
+<section><span class="tag">0:55 – 1:25</span><h2>4 · Antiderivatives</h2>
+<div class="say">“Derivative: given the function, find the slope. Antiderivative: given the slope, find the function.”</div>
+<p>F is an antiderivative of f on an interval if F′(x)=f(x). By MVT corollary ②, <b>every</b> antiderivative is F(x)+C. We write ∫f(x)dx = F(x)+C.</p>
+<div class="scroll"><table><tr><th>f(x)</th><th>xⁿ (n≠−1)</th><th>1/x</th><th>eˣ</th><th>sin x</th><th>cos x</th><th>sec²x</th><th>k (const)</th></tr>
+<tr><th>∫f dx</th><td>xⁿ⁺¹/(n+1)+C</td><td>ln|x|+C</td><td>eˣ+C</td><td>−cos x+C</td><td>sin x+C</td><td>tan x+C</td><td>kx+C</td></tr></table></div>
+<p>Rules: ∫kf = k∫f and ∫(f±g)=∫f±∫g. Always check by differentiating your answer.</p>
+<h3>Simulation: the family F(x)+C and fixing C</h3>
+<div class="ctl">f(x): <select id="af"></select> C <input type="range" id="ac" min="-5" max="5" step="0.1" value="0"><b id="acv"></b><button id="afit">Fit to the point</button></div>
+<svg id="asv" viewBox="0 0 600 270"></svg><div class="ro" id="aro"></div>
+<p class="mut">All curves have the same slope at each x (parallel tangents). An initial condition, the red point, picks one.</p>
+<h3>Worked examples</h3>
+<p>① ∫(x⁴ + 3x) dx = x⁵/5 + 3x²/2 + C<br>
+② ∫(2 sin x − 5eˣ) dx = −2cos x − 5eˣ + C<br>
+③ ∫(1/x + 1/x²) dx = ln|x| − 1/x + C &nbsp; (write 1/x² as x⁻²)<br>
+④ Initial value: f′(x)=3x²−2, f(1)=4 ⇒ f=x³−2x+C, 1−2+C=4 ⇒ C=5 ⇒ <b>f(x)=x³−2x+5</b>.<br>
+⑤ Motion: a(t)=6t, v(0)=1, s(0)=2 ⇒ v=3t²+1 ⇒ s=t³+t+2.</p></section>
+
+<section><span class="tag">1:25 – 1:30</span><h2>5 · Preview: area of a curved shape</h2>
+<div class="say">“We can measure rectangles and triangles. How would you find the area under y=x²?”</div>
+<div class="ctl">Try right-end rectangles, n = <input type="range" id="pn" min="1" max="30" value="3"><b id="pnv"></b></div>
+<svg id="psv" viewBox="0 0 600 240"></svg><div class="ro" id="pro"></div>
+<p>Next session: lower, upper and midpoint sums, sigma notation, and Archimedes’ circle.<br><b>Homework:</b> verify Rolle for f(x)=x³−3x on [−√3, √3]; apply MVT to √x on [1,4]; linearize ln x at 1 to estimate ln 1.05; solve f′(x)=cos x + 2, f(0)=1.</p></section>
+</main>
+<script>
+const $=id=>document.getElementById(id),NS="http://www.w3.org/2000/svg",css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+function el(t,a,p){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);p&&p.appendChild(e);return e}
+function txt(s,x,y,t,c){const e=el('text',{x,y,fill:c||css('--fg'),'font-size':12,'font-family':'system-ui'},s);e.textContent=t}
+function P(id,x0,x1,y0,y1,H){const s=$(id);s.innerHTML='';H=H||270;const sx=x=>30+(x-x0)/(x1-x0)*540,sy=y=>H-22-(y-y0)/(y1-y0)*(H-44),m=css('--mut');
+ if(y0<0&&y1>0)el('line',{x1:30,x2:570,y1:sy(0),y2:sy(0),stroke:m},s);if(x0<0&&x1>0)el('line',{x1:sx(0),x2:sx(0),y1:10,y2:H-10,stroke:m},s);return{s,sx,sy}}
+function cv(p,f,x0,x1,col,w){let d='';for(let i=0;i<=300;i++){const x=x0+(x1-x0)*i/300,y=f(x);d+=(i?'L':'M')+p.sx(x).toFixed(1)+' '+p.sy(y).toFixed(1)}el('path',{d,fill:'none',stroke:col,'stroke-width':w||2.5},p.s)}
+function rng(f,x0,x1){let a=1e9,b=-1e9;for(let i=0;i<=200;i++){const y=f(x0+(x1-x0)*i/200);a=Math.min(a,y);b=Math.max(b,y)}const q=(b-a||1)*.12;return[a-q,b+q]}
+function ln(p,x1,y1,x2,y2,c,w,d){el('line',{x1:p.sx(x1),y1:p.sy(y1),x2:p.sx(x2),y2:p.sy(y2),stroke:c,'stroke-width':w||2,'stroke-dasharray':d||''},p.s)}
+function pt(p,x,y,c,r){el('circle',{cx:p.sx(x),cy:p.sy(y),r:r||5,fill:c},p.s)}
+/* Warm-up */
+const W=[x=>x*x,Math.abs,x=>x<0?0:1];
+function warm(){const f=W[$('wf').value];let c=+$('wc').value;if(Math.abs(c)<.04)c=0;$('wcv').textContent=c.toFixed(2);const hh=+$('wh').value;$('whv').textContent=hh.toFixed(2);
+ const[y0,y1]=rng(f,-2,2),p=P('wsv',-2,2,Math.min(y0,-.3),y1+.2);
+ if($('wf').value==='2'){cv(p,f,-2,-1e-4,css('--ac'),3);cv(p,f,0,2,css('--ac'),3)}else cv(p,f,-2,2,css('--ac'),3);
+ const e=1e-6,L=f(c-e),R=f(c+e),fc=f(c),cont=Math.abs(L-fc)<1e-3&&Math.abs(R-fc)<1e-3,sl=(fc-f(c-e))/e,sr=(f(c+e)-fc)/e,fin=Math.abs(sl)<1e3&&Math.abs(sr)<1e3,dif=cont&&fin&&Math.abs(sl-sr)<.01,nf=v=>Math.abs(v)>1e3?'∞ (undefined: rise 1 over a run that shrinks to 0)':v.toFixed(2);
+ if(dif){const s=sr;ln(p,c-.8,fc-.8*s,c+.8,fc+.8*s,css('--ok'),2)}
+ pt(p,c-hh,f(c-hh),css('--ac'));pt(p,c+hh,f(c+hh),css('--ac2'));el('circle',{cx:p.sx(c),cy:p.sy(fc),r:6,fill:css('--bg'),stroke:css('--fg'),'stroke-width':2.5},p.s);
+ const t=(b)=>b?'<b style="color:var(--ok)">✔ yes</b>':'<b style="color:var(--bad)">✘ no</b>';
+ $('wro').innerHTML='points: f(c−h) = '+f(c-hh).toFixed(3)+', f(c+h) = '+f(c+hh).toFixed(3)+'<br>limit from left = '+L.toFixed(3)+', limit from right = '+R.toFixed(3)+', f(c) = '+fc.toFixed(3)+'<br>Continuous at c (limit = value)? '+t(cont)+'<br>slope from left = '+nf(sl)+', slope from right = '+nf(sr)+'<br>Differentiable at c (slopes agree)? '+t(dif)}
+['wf','wc','wh'].forEach(i=>$(i).oninput=warm);$('w0').onclick=()=>{$('wc').value=0;warm()};
+/* Figures */
+const GS={};
+function gset(id,list){let g=GS[id];if(!g){const box=$(id);box.innerHTML='<div class="ctl">Case: <select></select></div><svg viewBox="0 0 600 285"></svg><div class="cap ro" style="margin-top:6px"></div>';g=GS[id]={box,sel:box.querySelector('select'),cap:box.querySelector('.cap'),list};list.forEach((o,i)=>g.sel.add(new Option(o.n,i)));g.sel.onchange=()=>gdraw(id)}g.list=list;gdraw(id)}
+function gdraw(id){const g=GS[id],o=g.list[g.sel.value],s=g.box.querySelector('svg');s.innerHTML='';
+ const X=x=>300+x*85,Y=y=>240-y*52,bl=css('--ac'),or=css('--ac2'),gr=css('--ok'),mu=css('--mut'),fgc=css('--fg'),bg=css('--bg'),bd=css('--bd');
+ const ln=(x1,y1,x2,y2,c,d,w)=>el('line',{x1:X(x1),y1:Y(y1),x2:X(x2),y2:Y(y2),stroke:c||mu,'stroke-width':w||1.5,'stroke-dasharray':d||''},s);
+ const T=(x,y,t,c,a,b)=>{const e=el('text',{x:X(x),y:Y(y),fill:c||fgc,'font-size':13,'font-family':'system-ui','text-anchor':a||'middle','font-weight':b?600:400},s);e.textContent=t};
+ const seg=(f,x0,x1,c,w)=>{let d='',pen=0;for(let i=0;i<=240;i++){const x=x0+(x1-x0)*i/240,y=f(x);if(!isFinite(y)||y<0||y>4.1){pen=0;continue}d+=(pen?'L':'M')+X(x).toFixed(1)+' '+Y(y).toFixed(1);pen=1}el('path',{d,fill:'none',stroke:c||bl,'stroke-width':w||3},s)};
+ const D=(x,y,f,c)=>el('circle',{cx:X(x),cy:Y(y),r:6,fill:f?(c||fgc):bg,stroke:c||fgc,'stroke-width':2.5},s);
+ const guide=(y,t,c,x1,lx,an)=>{ln(-3,y,x1,y,c,'5',1.5);T(lx===undefined?x1-.15:lx,y+.12,t,c,an||'end',1)};
+ for(let y=0;y<=4;y++){ln(-3,y,3,y,bd,'',1);T(-3.08,y-.08,String(y),mu,'end')}
+ ln(-3,0,3,0,mu,'',1.5);ln(-3,0,-3,4.1,mu,'',1.5);
+ (o.xt||[[-2,'−2'],[-1,'−1'],[0,'c = 0'],[1,'1'],[2,'2']]).forEach(([x,t])=>{ln(x,0,x,-.08,mu);T(x,-.42,t,mu,'middle',t.length>3)});
+ o.d({ln,T,seg,D,guide,bl,or,gr,mu});
+ g.cap.innerHTML=o.k.map(([ok,t])=>(ok?'<span style="color:var(--ok)">✔</span> ':'<span style="color:var(--bad)">✘</span> ')+t).join('<br>')+'<div class="mut" style="margin-top:6px;font-family:system-ui,sans-serif">Filled dot = the actual value f(c). Open circle = a height the graph approaches but does not take.</div>'}
+function figs(){
+ const F2=x=>1.5+.6*Math.sin(1.2*x),fa=F2(-1.8),fb=F2(1.8),q=v=>v.toFixed(2),xa=[[-1.8,'a = −1.8'],[0,'0'],[1.8,'b = 1.8']];
+ const ab=P=>{P.ln(-1.8,0,-1.8,fa,P.mu,'3');P.ln(1.8,0,1.8,fb,P.mu,'3')};
+ gset('fig1',[
+ {n:'Continuous at c ✔',d:P=>{P.seg(x=>1.4+.5*x+.25*x*x,-3,3);P.D(0,1.4,1);P.guide(1.4,'f(c) = lim f(x) = 1.4',P.gr,0)},k:[[1,'(i) f(0) = 1.4 is defined'],[1,'(ii) left limit = 1.4, right limit = 1.4, so lim f(x) = 1.4 exists'],[1,'(iii) lim f(x) = 1.4 = f(0)']]},
+ {n:'Hole: (i) fails',d:P=>{P.seg(x=>1.5+.4*x,-3,3);P.D(0,1.5,0);P.guide(1.5,'limit = 1.5',P.or,0);P.T(.2,.9,'f(c) is not defined',null,'start')},k:[[0,'(i) f(0) is not defined (open circle, no filled dot)'],[1,'(ii) both one-sided limits are 1.5, so lim f(x) = 1.5 exists'],[0,'(iii) cannot hold: the limit is 1.5 but f(0) does not exist']]},
+ {n:'Jump: (ii) fails',d:P=>{P.seg(x=>1.2+.3*x,-3,-.001);P.seg(x=>2.8+.3*x,0,3);P.D(0,1.2,0);P.D(0,2.8,1);P.guide(1.2,'left limit = 1.2',P.or,0);P.guide(2.8,'right limit = 2.8 = f(0)',P.gr,0)},k:[[1,'(i) f(0) = 2.8 is defined'],[0,'(ii) left limit 1.2 ≠ right limit 2.8, so lim f(x) does not exist'],[0,'(iii) fails because the limit does not exist']]},
+ {n:'Wrong value: (iii) fails',d:P=>{P.seg(x=>1.2+.4*x,-3,3);P.D(0,1.2,0);P.D(0,2.9,1);P.guide(1.2,'limit = 1.2',P.or,0);P.guide(2.9,'f(c) = 2.9',P.gr,0)},k:[[1,'(i) f(0) = 2.9 is defined'],[1,'(ii) left limit = right limit = 1.2, so lim f(x) = 1.2 exists'],[0,'(iii) lim f(x) = 1.2 but f(0) = 2.9, so lim f(x) ≠ f(0)']]},
+ {n:'Infinite break: (ii) fails',d:P=>{P.seg(x=>2+.35/x,-3,-.03);P.seg(x=>2+.35/x,.03,3);P.ln(0,0,0,4.1,P.or,'6',2);P.T(-.2,.6,'x→0⁻: f(x)→−∞',P.or,'end',1);P.T(.2,3.7,'x→0⁺: f(x)→+∞',P.or,'start',1)},k:[[0,'(i) f(0) is not defined'],[0,'(ii) the one-sided limits are −∞ and +∞, so the limit does not exist'],[0,'(iii) fails']]}]);
+ gset('fig2',[
+ {n:'(a,b) open',xt:xa,d:P=>{P.seg(F2,-1.8,1.8);ab(P);P.D(-1.8,fa,0);P.D(1.8,fb,0);P.T(0,3.6,'open interval: a and b are not included',null,'middle',1)},k:[[1,'(a,b) = all x with a < x < b. Open circles at both ends.']]},
+ {n:'[a,b] closed',xt:xa,d:P=>{P.seg(F2,-1.8,1.8);ab(P);P.D(-1.8,fa,1);P.D(1.8,fb,1);P.T(0,3.6,'closed interval: a and b are included',null,'middle',1)},k:[[1,'[a,b] = all x with a ≤ x ≤ b. Filled dots at both ends.']]},
+ {n:'Continuous on [a,b] ✔',xt:xa,d:P=>{P.seg(F2,-1.8,1.8);ab(P);P.D(-1.8,fa,1);P.D(1.8,fb,1);P.guide(fa,'f(a) = '+q(fa),P.gr,-1.8);P.guide(fb,'f(b) = '+q(fb),P.gr,1.8,1.95,'start');P.T(-1,3.2,'x→a⁺',P.or,'middle',1);P.T(1,3.2,'x→b⁻',P.or,'middle',1)},k:[[1,'continuous at every c in (a,b)'],[1,'lim as x→a⁺ of f(x) = '+q(fa)+' = f(a)'],[1,'lim as x→b⁻ of f(x) = '+q(fb)+' = f(b)']]},
+ {n:'Fails at endpoint b ✘',xt:xa,d:P=>{P.seg(F2,-1.8,1.8);ab(P);P.D(-1.8,fa,1);P.D(1.8,fb,0);P.D(1.8,fb+1.2,1);P.guide(fb,'limit as x→b⁻ = '+q(fb),P.or,1.8,1.95,'start');P.guide(fb+1.2,'f(b) = '+q(fb+1.2),P.gr,1.8,1.95,'start')},k:[[1,'continuous at every c in (a,b)'],[1,'lim as x→a⁺ of f(x) = '+q(fa)+' = f(a)'],[0,'lim as x→b⁻ of f(x) = '+q(fb)+' ≠ '+q(fb+1.2)+' = f(b)'],[0,'so f is not continuous on [a,b] (it is still continuous on (a,b))']]}]);
+ const sm=x=>.5+.4*x*x;
+ gset('fig3',[
+ {n:'Differentiable ✔ (smooth)',xt:[[-2,'−2'],[-1,'−1'],[0,'0'],[.8,'c = 0.8'],[2,'2']],d:P=>{P.seg(sm,-3,3);P.ln(-.6,sm(.8)-.64*1.4,2.4,sm(.8)+.64*1.6,P.or,'',2.5);P.D(.8,sm(.8),1);P.T(-2.9,3.8,'f(0.8) = '+q(sm(.8))+',  tangent slope f′(0.8) = 0.64',P.or,'start',1)},k:[[1,'slope from the left: lim of [f(c+h) − f(c)]/h as h→0⁻ is 0.64'],[1,'slope from the right (h→0⁺) is 0.64'],[1,'equal and finite, so f′(0.8) = 0.64 (one tangent line)']]},
+ {n:'Corner ✘ (shifted |x|)',d:P=>{P.seg(x=>.6+Math.abs(x),-3,3);P.ln(-1.2,1.8,.55,.05,P.or,'6',2);P.ln(-.55,.05,1.2,1.8,P.gr,'6',2);P.D(0,.6,1);P.T(-2.9,3.8,'left slope = −1 (orange),  right slope = +1 (green)',null,'start',1)},k:[[1,'continuous at 0: lim f(x) = 0.6 = f(0)'],[0,'slope from the left = −1 ≠ +1 = slope from the right'],[0,'so f′(0) does not exist: a corner']]},
+ {n:'Cusp ✘ (x^(2/3))',d:P=>{P.seg(x=>.4+.9*Math.pow(Math.abs(x),2/3),-3,3);P.D(0,.4,1);P.T(-2.9,3.8,'the slope heads to −∞ from the left and +∞ from the right',null,'start',1)},k:[[1,'continuous at 0'],[0,'left slope → −∞, right slope → +∞'],[0,'so f′(0) does not exist: a cusp']]},
+ {n:'Vertical tangent ✘ (x^(1/3))',d:P=>{P.seg(x=>2+.9*Math.cbrt(x),-3,3);P.ln(0,0,0,4.1,P.or,'6',2);P.D(0,2,1);P.T(.15,.5,'vertical tangent: slope is infinite',P.or,'start',1)},k:[[1,'continuous at 0'],[0,'[f(h) − f(0)]/h = 0.9/h^(2/3) grows without bound as h→0'],[0,'so there is no finite f′(0)']]},
+ {n:'Jump ✘',d:P=>{P.seg(x=>1.2+.3*x,-3,-.001);P.seg(x=>2.8+.3*x,0,3);P.D(0,1.2,0);P.D(0,2.8,1);P.guide(1.2,'left limit = 1.2',P.or,0);P.guide(2.8,'right limit = 2.8 = f(0)',P.gr,0)},k:[[0,'not continuous at 0 (left limit 1.2 ≠ right limit 2.8)'],[0,'a function that is not continuous at c cannot be differentiable at c']]}]);}
+/* MVT figure */
+function mvtfig(){const s=$('mfig');s.innerHTML='';const X=x=>60+x*120,Y=y=>260-y*22,mu=css('--mut'),bl=css('--ac'),or=css('--ac2'),gr=css('--ok'),fg=css('--fg'),bg=css('--bg'),bd=css('--bd');
+ const ln=(x1,y1,x2,y2,c,d,w)=>el('line',{x1:X(x1),y1:Y(y1),x2:X(x2),y2:Y(y2),stroke:c,'stroke-width':w||1.5,'stroke-dasharray':d||''},s);
+ const T=(x,y,t,c,a,b)=>{const e=el('text',{x:X(x),y:Y(y),fill:c||fg,'font-size':13,'font-family':'system-ui','text-anchor':a||'middle','font-weight':b?600:400},s);e.textContent=t};
+ const D=(x,y,c)=>el('circle',{cx:X(x),cy:Y(y),r:6,fill:c,stroke:bg,'stroke-width':2},s);
+ ln(0,0,4.2,0,mu);ln(0,0,0,10.3,mu);
+ [[1,'a = 1'],[2,'c = 2'],[3,'b = 3']].forEach(([x,t])=>{ln(x,0,x,-.15,mu);T(x,-.9,t,mu,'middle',1)});
+ [[1,'f(a) = 1'],[4,'f(c) = 4'],[9,'f(b) = 9']].forEach(([y,t])=>T(-.12,y-.15,t,mu,'end'));
+ let d='';for(let i=0;i<=100;i++){const x=.2+3.5*i/100;d+=(i?'L':'M')+X(x).toFixed(1)+' '+Y(x*x).toFixed(1)}el('path',{d,fill:'none',stroke:bl,'stroke-width':3},s);T(3.55,10.0,'y = f(x)',bl,'start',1);
+ ln(.8,.2,3.2,9.8,or,'',2.5);T(1.55,5.7,'secant AB: slope = 8/2 = 4',or,'end',1);
+ ln(1.15,4-4*.85,2.95,4+4*.95,gr,'',2.5);T(.15,6.7,'tangent at c: slope f′(c) = 2c = 4',gr,'start',1);T(.15,7.6,'parallel to the secant!',gr,'start',1);
+ ln(1,0,1,1,mu,'4');ln(3,0,3,9,mu,'4');ln(2,0,2,4,gr,'4');ln(0,4,2,4,gr,'4');ln(0,1,1,1,mu,'4');ln(0,9,3,9,mu,'4');
+ ln(1,1,3,1,fg,'',1.5);ln(3,1,3,9,fg,'',1.5);T(2,.45,'run: b − a = 3 − 1 = 2',fg,'middle',1);T(3.08,5,'rise: f(b) − f(a)',fg,'start');T(3.08,4.1,'= 9 − 1 = 8',fg,'start');
+ D(1,1,or);D(3,9,or);D(2,4,gr);T(.9,1.9,'A',or,'end',1);T(3.12,9.6,'B',or,'start',1);T(1.82,4.4,'C',gr,'end',1);
+ T(.35,9.6,'f′(c) = [ f(b) − f(a) ] / ( b − a )',fg,'start',1)}
+/* Reduction sim */
+function red(){const F=M[$('rdf').value],a=+$('rda').value,b=+$('rdb').value;$('rdav').textContent=a.toFixed(2);$('rdbv').textContent=b.toFixed(2);const s=$('rdsv');s.innerHTML='';
+ if(b<=a+.2){$('rdro').textContent='Choose b > a.';return}
+ const m=(F.f(b)-F.f(a))/(b-a),Lf=x=>F.f(a)+m*(x-a),g=x=>F.f(x)-Lf(x),mu=css('--mut'),bl=css('--ac'),or=css('--ac2'),gr=css('--ok');
+ const pn=(ox,fs,tt)=>{let y0=1e9,y1=-1e9;fs.forEach(f=>{for(let i=0;i<=120;i++){const y=f(-3.2+6.4*i/120);y0=Math.min(y0,y);y1=Math.max(y1,y)}});const q=(y1-y0||1)*.15;y0-=q;y1+=q;const sx=x=>ox+(x+3.2)/6.4*270,sy=y=>240-(y-y0)/(y1-y0)*200;
+  if(y0<0&&y1>0)el('line',{x1:sx(-3.2),x2:sx(3.2),y1:sy(0),y2:sy(0),stroke:mu},s);txt(s,ox,22,tt,css('--fg'));return{sx,sy}};
+ const path=(P,f,x0,x1,c,w)=>{let d='';for(let i=0;i<=200;i++){const x=x0+(x1-x0)*i/200;d+=(i?'L':'M')+P.sx(x).toFixed(1)+' '+P.sy(f(x)).toFixed(1)}el('path',{d,fill:'none',stroke:c,'stroke-width':w},s)};
+ const dot=(P,x,y,c,r)=>el('circle',{cx:P.sx(x),cy:P.sy(y),r:r||5,fill:c},s);
+ const cs=[];let pv=F.d(a)-m;for(let i=1;i<=400;i++){const x=a+(b-a)*i/400,v=F.d(x)-m;if(pv*v<0)cs.push(x);pv=v}
+ const A=pn(20,[F.f,Lf],'f and the secant L');path(A,F.f,-3.2,3.2,bl,3);path(A,Lf,a,b,or,2.5);dot(A,a,F.f(a),or);dot(A,b,F.f(b),or);
+ cs.forEach(c=>{const h=1;el('line',{x1:A.sx(c-h),y1:A.sy(F.f(c)-m*h),x2:A.sx(c+h),y2:A.sy(F.f(c)+m*h),stroke:gr,'stroke-width':2},s);dot(A,c,F.f(c),gr)});
+ const B=pn(310,[g],'g = f − L  (g(a) = g(b) = 0)');path(B,g,-3.2,3.2,bl,3);dot(B,a,0,or);dot(B,b,0,or);
+ cs.forEach(c=>{el('line',{x1:B.sx(c-1),y1:B.sy(g(c)),x2:B.sx(c+1),y2:B.sy(g(c)),stroke:gr,'stroke-width':2},s);dot(B,c,g(c),gr)});
+ $('rdro').innerHTML='m = secant slope = '+m.toFixed(3)+' &nbsp; g(a) = '+g(a).toFixed(3)+', g(b) = '+g(b).toFixed(3)+'<br>Rolle on g gives g′(c) = 0, so f′(c) = m. c = '+(cs.length?cs.map(c=>c.toFixed(2)).join(', '):'none found')}
+['rdf','rda','rdb'].forEach(i=>$(i).oninput=red);
+/* IVT */
+const IV=[{f:x=>x*x-2,a:0,b:3,j:0},{f:Math.cos,a:0,b:3,j:0},{f:x=>x<1.5?x:x+2,a:0,b:3,j:1}];
+function ivt(){const q=IV[$('ivf').value],f=q.f,fa=f(q.a),fb=f(q.b),lo=Math.min(fa,fb),hi=Math.max(fa,fb),N=lo+(hi-lo)*(+$('ivn').value);$('ivv').textContent=N.toFixed(2);
+ const[y0,y1]=rng(f,q.a,q.b),p=P('ivsv',q.a-.2,q.b+.2,Math.min(y0,lo-.3),Math.max(y1,hi+.3));
+ if(q.j){cv(p,f,q.a,1.4999,css('--ac'),3);cv(p,f,1.5,q.b,css('--ac'),3);el('circle',{cx:p.sx(1.5),cy:p.sy(1.5),r:5,fill:css('--bg'),stroke:css('--ac'),'stroke-width':2},p.s);pt(p,1.5,3.5,css('--ac'),4)}else cv(p,f,q.a,q.b,css('--ac'),3);
+ ln(p,q.a-.2,N,q.b+.2,N,css('--ac2'),1.5,'5');pt(p,q.a,fa,css('--fg'));pt(p,q.b,fb,css('--fg'));txt(p.s,p.sx(q.a)+8,p.sy(fa)-8,'f(a) = '+fa.toFixed(2));txt(p.s,p.sx(q.b)-80,p.sy(fb)-8,'f(b) = '+fb.toFixed(2));txt(p.s,36,16,'orange line: y = N    green: points where f(c) = N',css('--mut'));
+ const cs=[];for(let i=0;i<3000;i++){const x=q.a+(q.b-q.a)*i/3000,x2=x+(q.b-q.a)/3000,u=f(x)-N,w=f(x2)-N;if(u*w<=0&&Math.abs(f(x2)-f(x))<.1)cs.push(x)}
+ const uq=cs.filter((c,i)=>i==0||c-cs[i-1]>.01);uq.forEach(c=>{pt(p,c,N,css('--ok'),6);txt(p.s,p.sx(c)-18,p.sy(N)-12,'c = '+c.toFixed(2),css('--ok'))});
+ $('ivro').innerHTML='f(a) = '+fa.toFixed(2)+', f(b) = '+fb.toFixed(2)+', N = '+N.toFixed(2)+'<br>'+(uq.length?'<b style="color:var(--ok)">\u2714 found c with f(c) = N: c = '+uq.map(c=>c.toFixed(2)).join(', ')+'</b>':'<b style="color:var(--bad)">\u2718 no c exists: the graph jumped over N (f is not continuous at 1.5)</b>')}
+['ivf','ivn'].forEach(i=>$(i).oninput=ivt);
+/* Rolle */
+const R=[{n:'(x−1)(x−3) on [1,3]',f:x=>(x-1)*(x-3),d:x=>2*x-4,a:1,b:3,c:1,g:1,x:[.3,3.7]},
+{n:'sin x on [0,π]',f:Math.sin,d:Math.cos,a:0,b:Math.PI,c:1,g:1,x:[-.4,3.6]},
+{n:'|x| on [−1,1]',f:Math.abs,d:Math.sign,a:-1,b:1,c:1,g:0,x:[-1.4,1.4]},
+{n:'jump: x on [0,1), f(1)=0',f:x=>x>=1?0:x,d:x=>1,a:0,b:1,c:0,g:1,x:[-.3,1.3]},
+{n:'x on [0,1] (f(a)≠f(b))',f:x=>x,d:x=>1,a:0,b:1,c:1,g:1,x:[-.3,1.3]}];
+R.forEach((r,i)=>$('rf').add(new Option(r.n,i)));
+function rolle(){const r=R[$('rf').value],[y0,y1]=rng(r.f,r.x[0],r.x[1]),p=P('rsv',r.x[0],r.x[1],Math.min(y0,-.1),y1);
+ cv(p,r.f,r.x[0],r.x[1],css('--ac'));const fa=r.f(r.a),fb=r.f(r.b),eq=Math.abs(fa-fb)<1e-9;
+ [r.a,r.b].forEach((x,i)=>{pt(p,x,r.f(x),css('--ac2'));ln(p,x,0,x,r.f(x),css('--mut'),1,'3');txt(p.s,p.sx(x)-(i?10:-2),p.sy(0)+13,(i?'b = ':'a = ')+(Math.abs(x-Math.PI)<1e-9?'π':x),css('--ac2'));txt(p.s,p.sx(x)+(i?-70:8),p.sy(r.f(x))-8,'f('+(i?'b':'a')+') = '+(+r.f(x).toFixed(2)),css('--ac2'))});txt(p.s,36,16,'orange: endpoints a, b    green: c where the tangent is flat',css('--mut'));
+ let cs=[];if(r.c&&r.g&&eq)for(let i=1;i<2000;i++){const x=r.a+(r.b-r.a)*i/2000,x2=x+(r.b-r.a)/2000;if(r.d(x)*r.d(x2)<=0&&Math.abs(r.d(x))<.05)cs.push(x)}
+ cs.forEach(c=>{ln(p,c-.4,r.f(c),c+.4,r.f(c),css('--ok'),2.5);pt(p,c,r.f(c),css('--ok'));txt(p.s,p.sx(c)-22,p.sy(r.f(c))+(r.f(c)<=Math.min(r.f(r.a),r.f(r.b))?-12:22),'c = '+c.toFixed(2),css('--ok'));ln(p,c,0,c,r.f(c),css('--ok'),1,'3')});
+ const t=(b,s,w)=>(b?'✔ ':'✘ ')+s+' <span style="color:var(--mut)">— '+w+'</span>';
+ $('rro').innerHTML=t(r.c,'① continuous on [a,b]','no hole, jump or break; the limit equals the value at every point')+'<br>'+t(r.g,'② differentiable on (a,b)','no corner, cusp or vertical tangent; one tangent at every point')+'<br>'+t(eq,'③ f(a)=f(b)','both ends have the same height')+(!r.c?'<br><span style="color:var(--bad)">Check ① fails at x=1: the left limit is 1 but f(1)=0, so lim f(x) ≠ f(1).</span>':'')+(!r.g&&r.c?'<br><span style="color:var(--bad)">Check ② fails at x=0: slope from the left = −1, from the right = +1, so f′(0) does not exist.</span>':'')+'<br><b>'+(cs.length?'All three hold: flat tangent at c = '+cs.map(c=>c.toFixed(2)).join(', '):(r.c&&r.g&&eq?'':'A hypothesis fails, so Rolle gives no guarantee here (no flat tangent exists).'))+'</b>'}
+$('rf').onchange=rolle;
+/* Ball animation */
+const BM={up:{h:t=>2+9.8*t-4.9*t*t,v:t=>9.8-9.8*t,a:t=>-9.8,vm:9.8,z:[1]},
+dn:{h:t=>2-9.8*t+4.9*t*t,v:t=>-9.8+9.8*t,a:t=>9.8,vm:9.8,z:[1]},
+both:{h:t=>2+3.5*Math.sin(Math.PI*t),v:t=>3.5*Math.PI*Math.cos(Math.PI*t),a:t=>-3.5*Math.PI*Math.PI*Math.sin(Math.PI*t),vm:11,z:[0.5,1.5]}};
+let bt=0,bpl=true,blast=0;
+function ball(){const B=BM[$('bm').value],T=2,h=B.h,v=B.v,s=$('bsv');s.innerHTML='';const y0=-3.5,y1=8,sc=220/(y1-y0),yb=y=>240-(y-y0)*sc,gx=t=>250+t/T*320,m=css('--mut'),t=bt,H=h(t),V=v(t),A=B.a(t),flat=Math.abs(V)<0.0153*B.vm;
+ el('line',{x1:30,x2:210,y1:yb(0),y2:yb(0),stroke:m},s);txt(s,34,yb(0)+14,'0 m');el('line',{x1:30,x2:210,y1:yb(2),y2:yb(2),stroke:m,'stroke-dasharray':'4'},s);txt(s,34,yb(2)-4,'start and end height 2 m');
+ let lo=1e9,hi=-1e9;for(let i=0;i<=100;i++){const y=h(2*i/100);lo=Math.min(lo,y);hi=Math.max(hi,y)}
+ el('line',{x1:115,x2:115,y1:yb(lo),y2:yb(hi),stroke:m,'stroke-dasharray':'2 4'},s);
+ el('line',{x1:250,x2:570,y1:240,y2:240,stroke:m},s);el('line',{x1:250,x2:250,y1:20,y2:240,stroke:m},s);el('line',{x1:250,x2:570,y1:yb(2),y2:yb(2),stroke:m,'stroke-dasharray':'4'},s);txt(s,545,254,'t (s)');txt(s,256,28,'h (m)');txt(s,gx(1)-3,254,'1');txt(s,gx(2)-3,254,'2');
+ let d='',d2='';for(let i=0;i<=100;i++){const x=2*i/100,q=gx(x).toFixed(1)+' '+yb(h(x)).toFixed(1);d+=(i?'L':'M')+q;if(x<=t)d2+=(d2?'L':'M')+q}
+ el('path',{d,fill:'none',stroke:m,'stroke-width':1.5},s);if(d2)el('path',{d:d2,fill:'none',stroke:css('--ac'),'stroke-width':3},s);
+ B.z.forEach(z=>{el('circle',{cx:gx(z),cy:yb(h(z)),r:9,fill:'none',stroke:css('--ok'),'stroke-width':2},s);txt(s,gx(z)+12,yb(h(z))+(B.a(z)<0?-8:16),(B.a(z)<0?'maximum':'minimum')+' (t='+z+')',css('--ok'))});
+ const col=flat?css('--ok'):css('--ac2'),sl=-V*sc/160;el('line',{x1:gx(t)-55,y1:yb(H)+sl*55,x2:gx(t)+55,y2:yb(H)-sl*55,stroke:col,'stroke-width':flat?3:2},s);
+ el('circle',{cx:gx(t),cy:yb(H),r:5,fill:css('--ac')},s);el('circle',{cx:115,cy:yb(H),r:11,fill:css('--ac2')},s);
+ if(!flat){const y2=yb(H)-V*3,k=V>0?9:-9;el('line',{x1:132,x2:132,y1:yb(H),y2:y2,stroke:col,'stroke-width':3},s);el('polygon',{points:'132,'+y2+' 127,'+(y2+k)+' 137,'+(y2+k),fill:col},s)}
+ $('bro').innerHTML='t = '+t.toFixed(2)+' s &nbsp; h = '+H.toFixed(2)+' m &nbsp; velocity h\u2032(t) = '+V.toFixed(2)+' m/s &nbsp; '+(flat?'<b style="color:var(--ok)">'+(A<0?'TOP (maximum)':'BOTTOM (minimum)')+': h\u2032 = 0, this is a Rolle c</b>':(V>0?'moving up':'moving down'));$('bt').value=t}
+function bloop(ts){if(bpl){bt+=(ts-blast)/1000*$('bsp').value*2;if(bt>2)bt=0;ball()}blast=ts;requestAnimationFrame(bloop)}
+function bstop(){bpl=false;$('bplay').textContent='\u25b6 Play'}
+$('bplay').onclick=()=>{bpl=!bpl;$('bplay').textContent=bpl?'\u23f8 Pause':'\u25b6 Play'};
+$('btop').onclick=()=>{const z=BM[$('bm').value].z;bstop();bt=z.find(x=>x>bt+.01)||z[0];ball()};
+$('bt').oninput=()=>{bstop();bt=+$('bt').value;ball()};$('bm').onchange=()=>{bt=0;ball()};
+requestAnimationFrame(bloop);
+/* MVT */
+const M=[{f:x=>x*x/2+1,d:x=>x},{f:x=>x**3/3-x,d:x=>x*x-1},{f:Math.sin,d:Math.cos}];
+function mvt(){const F=M[$('mf').value],a=+$('ma').value,b=+$('mb').value;$('mav').textContent=a.toFixed(2);$('mbv').textContent=b.toFixed(2);
+ if(b<=a+.2){$('msv').innerHTML='';$('mro').textContent='Choose b > a.';return}
+ const[y0,y1]=rng(F.f,-3.2,3.2),p=P('msv',-3.2,3.2,y0,y1);cv(p,F.f,-3.2,3.2,css('--ac'));
+ const m=(F.f(b)-F.f(a))/(b-a);ln(p,a,F.f(a),b,F.f(b),css('--ac2'),2);pt(p,a,F.f(a),css('--ac2'));pt(p,b,F.f(b),css('--ac2'));
+ const cs=[];let pv=F.d(a)-m;for(let i=1;i<=400;i++){const x=a+(b-a)*i/400,v=F.d(x)-m;if(pv*v<0)cs.push(x);pv=v}
+ cs.forEach(c=>{const h=(y1-y0)/2;ln(p,c-1,F.f(c)-m,c+1,F.f(c)+m,css('--ok'),2);pt(p,c,F.f(c),css('--ok'))});
+ $('mro').innerHTML='secant slope = '+m.toFixed(3)+' (orange) &nbsp; c with f′(c)=slope: '+(cs.length?cs.map(c=>c.toFixed(2)).join(', '):'none')+' (green tangent is parallel)'}
+['mf','ma','mb'].forEach(i=>$(i).oninput=mvt);
+/* Linearization */
+const Lz=[{f:Math.sqrt,d:x=>.5/Math.sqrt(x),c:4},{f:x=>x**3,d:x=>3*x*x,c:2},{f:Math.sin,d:Math.cos,c:0}];
+function lin(){const q=Lz[$('lf').value],w=1.5/Math.pow(10,+$('lz').value),c=q.c,x=c+(+$('lt').value)*w,L=t=>q.f(c)+q.d(c)*(t-c);
+ const x0=c-w,x1=c+w,f=t=>q.f(t),lo=Math.min(f(x0),f(x1),L(x0),L(x1)),hi=Math.max(f(x0),f(x1),L(x0),L(x1)),pd=(hi-lo)*.25+1e-12,p=P('lsv',x0,x1,lo-pd,hi+pd);
+ cv(p,f,x0,x1,css('--ac'),3);ln(p,x0,L(x0),x1,L(x1),css('--ac2'),1.8);pt(p,c,f(c),css('--ok'));pt(p,x,f(x),css('--ac'));pt(p,x,L(x),css('--ac2'),4);
+ txt(p.s,36,20,'window: x in ['+x0.toPrecision(4)+', '+x1.toPrecision(4)+']');
+ $('lro').innerHTML='L(x) = '+L(x).toFixed(6)+' &nbsp; f(x) = '+f(x).toFixed(6)+'<br>error = |f(x)−L(x)| = '+Math.abs(f(x)-L(x)).toExponential(2)}
+['lf','lt','lz'].forEach(i=>$(i).oninput=lin);
+/* Differentials */
+function dif(){const dx=+$('dd').value;$('ddv').textContent=dx.toFixed(2);const f=x=>x**3,L=t=>8+12*(t-2),x0=1.6,x1=3.1,p=P('dsv',x0,x1,0,f(x1)+2);
+ cv(p,f,x0,x1,css('--ac'));ln(p,x0,L(x0),x1,L(x1),css('--ac2'),1.5);const X=2+dx;
+ ln(p,2,8,X,8,css('--fg'),2.5);ln(p,X,8,X,L(X),css('--ac2'),4);ln(p,X,L(X),X,f(X),css('--bad'),4);pt(p,2,8,css('--ok'));
+ txt(p.s,p.sx(2+dx/2)-8,p.sy(8)+16,'dx');txt(p.s,p.sx(X)+6,p.sy((8+L(X))/2),'dy',css('--ac2'));txt(p.s,p.sx(X)+6,p.sy(f(X))-4,'error',css('--bad'));
+ const dy=12*dx,D=f(X)-8;$('dro').innerHTML='dy = f′(2)·dx = '+dy.toFixed(4)+' &nbsp; Δy = '+D.toFixed(4)+' &nbsp; error = '+(D-dy).toFixed(4)+' &nbsp; error/dx² = '+((D-dy)/dx/dx).toFixed(2)}
+$('dd').oninput=dif;
+/* Quiz */
+$('qb').onclick=()=>{const v=parseFloat($('qa').value);$('qr').innerHTML=isNaN(v)?'Enter a number.':Math.abs(v-2.01667)<.0005?'<span style="color:var(--ok)">Correct!</span>':'Not quite. Hint: f′(8) = 1/12.'};
+$('qs').onclick=()=>$('qr').innerHTML='f=x^(1/3), f(8)=2, f′(x)=1/(3x^(2/3)) ⇒ f′(8)=1/12. L(x)=2+(x−8)/12 ⇒ L(8.2)=2+0.2/12 = <b>2.01667</b> (true 2.01653).'; 
+/* Antiderivatives */
+const A=[{n:'f=2x → F=x²',F:x=>x*x,x0:1,y0:4},{n:'f=3x²−2 → F=x³−2x',F:x=>x**3-2*x,x0:1,y0:4},{n:'f=cos x → F=sin x',F:Math.sin,x0:0,y0:2},{n:'f=eˣ → F=eˣ',F:Math.exp,x0:0,y0:3}];
+A.forEach((a,i)=>$('af').add(new Option(a.n,i)));
+function anti(){const a=A[$('af').value],C=+$('ac').value;$('acv').textContent=C.toFixed(1);const p=P('asv',-3,3,-6,8);
+ for(let k=-5;k<=5;k++)cv(p,x=>a.F(x)+k,-3,3,css('--mut'),1);cv(p,x=>a.F(x)+C,-3,3,css('--ac2'),3.5);pt(p,a.x0,a.y0,css('--bad'),6);
+ const hit=Math.abs(a.F(a.x0)+C-a.y0)<.06;$('aro').innerHTML='F(x)+C passes through ('+a.x0+', '+a.y0+')? '+(hit?'<b style="color:var(--ok)">yes</b>':'no')+' &nbsp; needed C = '+(a.y0-a.F(a.x0)).toFixed(2)}
+$('af').onchange=()=>{$('ac').value=0;anti()};$('ac').oninput=anti;$('afit').onclick=()=>{const a=A[$('af').value];$('ac').value=Math.max(-5,Math.min(5,a.y0-a.F(a.x0)));anti()};
+/* Preview */
+function prev(){const n=+$('pn').value;$('pnv').textContent=n;const p=P('psv',0,1,0,1.05,240),dx=1/n;let S=0;
+ for(let i=1;i<=n;i++){const h=(i*dx)**2;S+=h*dx;el('rect',{x:p.sx((i-1)*dx),y:p.sy(h),width:p.sx(dx)-p.sx(0),height:p.sy(0)-p.sy(h),fill:css('--ac2'),'fill-opacity':.35,stroke:css('--ac2')},p.s)}
+ cv(p,x=>x*x,0,1,css('--ac'));$('pro').innerHTML='sum of rectangles = '+S.toFixed(4)+' &nbsp; (true area = 1/3 ≈ 0.3333, to be shown next session)'}
+$('pn').oninput=prev;
+function all(){red();figs();mvtfig();warm();ivt();rolle();mvt();lin();dif();anti();prev()}all();matchMedia('(prefers-color-scheme: dark)').onchange=all;
+</script></body></html>
