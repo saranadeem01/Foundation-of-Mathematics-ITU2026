@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Lecture 16-17: Intermediate Value Theorm | Rolle’s Theorem | Mean Value Theorem </title>
+<title>Lecture 16: Intermediate Value Theorem | Rolle’s Theorem | Mean Value Theorem</title>
 <style>
 :root{--bg:#fafaf7;--fg:#1d1d1b;--mut:#6b6b66;--card:#fff;--bd:#dcdcd4;--ac:#1a5fb4;--ac2:#c2410c;--ok:#15803d;--bad:#b91c1c;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#17181a;--fg:#ecece6;--mut:#9a9a94;--card:#202225;--bd:#3a3d41;--ac:#6ea8fe;--ac2:#fb923c;--ok:#4ade80;--bad:#f87171;color-scheme:dark}}
@@ -23,12 +23,11 @@ svg{width:100%;height:auto;background:var(--bg);border:1px solid var(--bd);borde
 .scroll{overflow-x:auto}table{border-collapse:collapse;font-size:.92rem}td,th{border:1px solid var(--bd);padding:4px 10px;text-align:center}
 .tl{display:flex;height:26px;border-radius:6px;overflow:hidden;font:600 .7rem system-ui,sans-serif;color:#fff}.tl div{display:flex;align-items:center;justify-content:center}
 </style></head><body><main>
-<span class="tag">Foundation Maths · Session 1 · 90 min</span>
-<h1>Lecture 16: Intermediate Value Theorm | Rolle’s Theorem | Mean Value Theorem</h1>
+<span class="tag">Foundation Maths</span>
+<h1>Lecture 16: Intermediate Value Theorem | Rolle’s Theorem | Mean Value Theorem</h1>
 <p class="mut">Follows Thomas’ Calculus Ch. 4 (§4.2 Rolle/MVT, §4.6 Linearization and Differentials, §4.8 Antiderivatives). Every section has a live simulation: project this page and drive it with the sliders.</p>
-<div class="tl"><div style="width:11%;background:#1a5fb4">Rolle 10</div><div style="width:17%;background:#2563eb">MVT 15</div><div style="width:28%;background:#7c3aed">Linearize 25</div><div style="width:6%;background:#888"></div><div style="width:33%;background:#0f766e">Antiderivatives 30</div><div style="width:5%;background:#c2410c"></div></div>
 
-<section><span class="tag">Warm-up · 5 min (take it from the Rolle slot)</span><h2>0 · Before Rolle: what do “continuous” and “differentiable” mean?</h2>
+<section><span class="tag">Warm-up</span><h2>0 · Before Rolle: what do “continuous” and “differentiable” mean?</h2>
 <div class="say">Idea first: “Continuous: you can draw the graph without lifting your pen. Differentiable: the graph is smooth, with no corner, so one tangent line exists.” The definitions below make these ideas precise.</div>
 <h3>Definition 1: continuous at a point</h3>
 <div class="box">f is <b>continuous at x=c</b> if all three hold:<br>(i) f(c) is defined;<br>(ii) lim<sub>x→c</sub> f(x) exists, meaning the left-hand limit lim<sub>x→c⁻</sub> f(x) and the right-hand limit lim<sub>x→c⁺</sub> f(x) both exist and are equal;<br>(iii) lim<sub>x→c</sub> f(x) = f(c).<br>In short: <b>lim<sub>x→c</sub> f(x) = f(c)</b>. Continuity fails at c when there is a hole, a jump, or a break.</div>
@@ -54,7 +53,7 @@ svg{width:100%;height:auto;background:var(--bg);border:1px solid var(--bd);borde
 <svg id="wsv" viewBox="0 0 600 270"></svg><div class="ro" id="wro"></div>
 <p class="mut">Blue dot = point at x=c−h, orange dot = point at x=c+h. Shrink h and watch where they head. Move c to 0 on |x| and on the step to see what breaks.</p>
 <div class="box"><b>How these appear in Rolle’s Theorem</b> (called checks ①, ②, ③ below):<br>① f is continuous on [a,b] (Definitions 1 and 2)<br>② f is differentiable on (a,b) (Definition 3)<br>③ f(a) = f(b) (same height at both ends)</div></section>
-<section><span class="tag">Warm-up · 3–5 min</span><h2>0b · The Intermediate Value Theorem (IVT)</h2>
+<section><span class="tag">Warm-up</span><h2>0b · The Intermediate Value Theorem (IVT)</h2>
 <div class="say">“At age 5 you were 1.2 m tall, at age 15 you were 1.7 m. At some age you were exactly 1.5 m, because growth has no jumps.”</div>
 <div class="box"><b>Intermediate Value Theorem.</b> If f is continuous on [a,b] and N is any number between f(a) and f(b), then there is at least one c in [a,b] with <b>f(c) = N</b>.<br>
 Geometry: a continuous graph from the height f(a) to the height f(b) must cross every horizontal line y = N in between. It cannot skip a height without lifting the pen.</div>
@@ -71,7 +70,7 @@ Geometry: a continuous graph from the height f(a) to the height f(b) must cross 
 <div class="box"><b>Root finding:</b> if f changes sign on [a,b], a root is trapped inside. Halving the interval again and again (the bisection method) is how calculators and computers solve equations.<br>
 <b>Existence proofs:</b> it shows a solution exists before you try to find it, for example in the root-counting example for Rolle’s Theorem below.<br>
 <b>Real life:</b> temperature, speed and height change continuously, so they pass through every value in between.</div></section>
-<section><span class="tag">0:00 – 0:10</span><h2>1 · Rolle’s Theorem</h2>
+<section><h2>1 · Rolle’s Theorem</h2>
 <div class="box"><b>Teaching order: Rolle first, then MVT.</b> This is the order in Thomas’ Calculus too. Rolle is the simple special case (flat secant), and the proof of the MVT uses Rolle. If you taught MVT first, you could not prove it from simpler facts.</div>
 <div class="say">“A ball thrown up leaves your hand at height 2 m and lands at height 2 m. At the top it is not moving up or down.”</div>
 <div class="box"><b>Rolle’s Theorem.</b> Suppose ① f is continuous on [a,b], ② f is differentiable on (a,b), and ③ f(a)=f(b) (definitions in Section 0). Then there is at least one c in (a,b) with <b>f′(c)=0</b>.</div>
@@ -94,7 +93,7 @@ So all three checks are needed.</p>
 <b>② Proving the MVT.</b> Subtract the secant line from f. The new function is 0 at both ends, so Rolle applies (see MVT section).<br>
 <b>③ Real-life meaning:</b> any motion that returns to its starting position (a thrown ball, a swing, a piston) must have an instant of zero velocity. Rolle is the base for finding maxima and minima: flat tangents are where they occur.</div></section>
 
-<section><span class="tag">0:10 – 0:25</span><h2>2 · Mean Value Theorem</h2>
+<section><h2>2 · Mean Value Theorem</h2>
 <div class="say">“120 km in 1 hour means the average speed was 120. At some instant the speedometer read exactly 120.”</div>
 <div class="box"><b>MVT.</b> If f is continuous on [a,b] and differentiable on (a,b), there is c in (a,b) with<br><b>f′(c) = (f(b) − f(a)) / (b − a).</b></div>
 <p>Geometry: some tangent is parallel to the secant. Rolle is the case where the secant is flat.</p>
@@ -122,8 +121,8 @@ b <input type="range" id="mb" min="-2.8" max="3" step="0.01" value="2"><b id="mb
 <b>④ Antiderivatives.</b> f′=0 ⇒ f is constant, which gives the “+C”.<br>
 <b>⑤ Later topics:</b> it is the key step in proving the Fundamental Theorem of Calculus, Taylor’s theorem with remainder, and L’Hôpital’s rule.</div></section>
 
-<section><span class="tag">Optional · 5–8 min</span><h2>2b · Proof techniques: reduction and contradiction</h2>
-<p class="mut">Two proof ideas appear again and again in this chapter. Both are worth naming for students. (If you meant a different “reduction proof”, tell me and I will adjust this section.)</p>
+<section><span class="tag">Optional</span><h2>2b · Proof techniques: reduction and contradiction</h2>
+<p class="mut">Two proof ideas appear again and again in this chapter. Both are worth naming for students.</p>
 <h3>A · Reduction: turn a new problem into one you already solved</h3>
 <div class="say">“I don’t know how to prove the MVT directly. But I do know Rolle. Can I <i>reduce</i> the MVT to Rolle?”</div>
 <div class="box"><b>Proof of the MVT by reduction to Rolle.</b> Let m = [f(b) − f(a)]/(b − a) and define the new function<br>
@@ -154,8 +153,8 @@ Uniqueness: <i>assume</i> there are two roots r₁ &lt; r₂. Then f(r₁) = f(r
 <p><b>Example ③: no differentiable f has f(0) = 0, f(2) = 6 and f′(x) &lt; 2 for all x.</b><br>
 <i>Assume</i> such an f exists. MVT gives c with f′(c) = (6 − 0)/(2 − 0) = 3. But f′(c) &lt; 2. Contradiction. ∎</p>
 <div class="box"><b>Pattern in Examples ① and ②:</b> “Two roots” ⇒ (Rolle) a flat tangent between them ⇒ but f′ is never 0 there ⇒ contradiction. Whenever f′ has no zero on an interval, f has at most one root there.</div></section>
-<section><span class="tag">0:25 – 0:50</span><h2>3 · Linearization and Differentials</h2>
-<h3>3a · Geometric idea (10 min)</h3>
+<section><h2>3 · Linearization and Differentials</h2>
+<h3>3a · Geometric idea</h3>
 <p>Zoom in on a smooth curve at x=c and it looks like its tangent line.</p>
 <h3>3b · Algebraic idea: you don’t need f(x)</h3>
 <div class="box">All you know: the point <b>f(c)</b> and slope <b>f′(c)</b>. The tangent line there is<br><b>L(x) = f(c) + f′(c)(x − c)</b>,&nbsp; and f(x) ≈ L(x) near c.</div>
@@ -164,11 +163,11 @@ position <input type="range" id="lt" min="-1" max="1" step="0.02" value="0.6">
 zoom <input type="range" id="lz" min="0" max="2" step="0.05" value="0"></div>
 <svg id="lsv" viewBox="0 0 600 270"></svg><div class="ro" id="lro"></div>
 <p>Drag zoom right: the curve and the tangent become indistinguishable. That is why linearization works.</p>
-<h3>Worked examples (5 min)</h3>
+<h3>Worked examples</h3>
 <p>① √4.1: f(4)=2, f′(4)=1/4 ⇒ L(4.1)=2+0.1/4=<b>2.025</b> (true 2.02485).<br>
 ② (2.01)³: f(2)=8, f′(2)=12 ⇒ L(2.01)=8+12(0.01)=<b>8.12</b> (true 8.120601).<br>
 ③ Standard ones at c=0: sin x≈x, (1+x)ᵏ≈1+kx, eˣ≈1+x.</p>
-<h3>3c · Differentials, step by step (10–12 min)</h3>
+<h3>3c · Differentials, step by step</h3>
 <div class="box"><b>Step 1: the true change.</b> Let y = f(x). If x changes by a small amount Δx (from x to x + Δx), then y changes by<br><b>Δy = f(x + Δx) − f(x)</b>.<br>Example: f(x) = x³, x = 2, Δx = 0.01: Δy = (2.01)³ − 2³.</div>
 <div class="box"><b>Step 2: the problem.</b> Computing Δy needs f at the new point, which can be hard by hand (try 2.01³). We want a quick estimate that uses only information at x.</div>
 <div class="box"><b>Step 3: use the tangent line.</b> Near x, the curve is almost the same as its tangent. Moving a horizontal distance Δx along the tangent line raises it by (slope) × (run) = <b>f′(x) · Δx</b>. That rise is easy to compute.</div>
@@ -211,12 +210,12 @@ For (2.01)³: true value = 8.120601, estimate = 8.12, so the error is 8.120601 �
 <p class="mut">Check question: the area of a circle is A = πr². If r = 5 changes to 5.1, estimate the change in area with a differential. (dA = 2πr dr = 2π(5)(0.1) = π ≈ 3.142. True change: π(5.1² − 5²) = 1.01π ≈ 3.173, so the estimate is off by only about 0.03.)</p>
 </section>
 
-<section><span class="tag">0:50 – 0:55</span><h2>Break · Quick exercise</h2>
+<section><h2>Quick exercise</h2>
 <p>Estimate ∛8.2 using linearization at c=8. Type your answer:</p>
 <div class="ctl"><input type="text" id="qa" placeholder="e.g. 2.0166" size="10"><button id="qb">Check</button><button id="qs">Show solution</button></div>
 <div class="ro" id="qr"></div></section>
 
-<section><span class="tag">0:55 – 1:25</span><h2>4 · Antiderivatives</h2>
+<section><h2>4 · Antiderivatives</h2>
 <div class="say">“Derivative: given the function, find the slope. Antiderivative: given the slope, find the function.”</div>
 <p>F is an antiderivative of f on an interval if F′(x)=f(x). By MVT corollary ②, <b>every</b> antiderivative is F(x)+C. We write ∫f(x)dx = F(x)+C.</p>
 <div class="scroll"><table><tr><th>f(x)</th><th>xⁿ (n≠−1)</th><th>1/x</th><th>eˣ</th><th>sin x</th><th>cos x</th><th>sec²x</th><th>k (const)</th></tr>
@@ -233,7 +232,7 @@ For (2.01)³: true value = 8.120601, estimate = 8.12, so the error is 8.120601 �
 ④ Initial value: f′(x)=3x²−2, f(1)=4 ⇒ f=x³−2x+C, 1−2+C=4 ⇒ C=5 ⇒ <b>f(x)=x³−2x+5</b>.<br>
 ⑤ Motion: a(t)=6t, v(0)=1, s(0)=2 ⇒ v=3t²+1 ⇒ s=t³+t+2.</p></section>
 
-<section><span class="tag">1:25 – 1:30</span><h2>5 · Preview: area of a curved shape</h2>
+<section><h2>5 · Preview: area of a curved shape</h2>
 <div class="say">“We can measure rectangles and triangles. How would you find the area under y=x²?”</div>
 <div class="ctl">Try right-end rectangles, n = <input type="range" id="pn" min="1" max="30" value="3"><b id="pnv"></b></div>
 <svg id="psv" viewBox="0 0 600 240"></svg><div class="ro" id="pro"></div>
